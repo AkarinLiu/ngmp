@@ -117,5 +117,32 @@ if [ "$choice" == "y" ]; then
     fi
     # Create Nginx user
     sudo useradd -s /sbin/nologin www-data
-    
+    # Install PHP Dependency
+    if [ -f apt ]; then
+        sudo apt install -y libxml2-dev libssl-dev git autoconf bison re2c pkg-config libsqlite3-dev zlib1g-dev libcurl4-openssl-dev libonig-dev
+    else
+        if [ -f yum ]; then
+            sudo yum install -y libxml2-devel openssl-devel git autoconf bison re2c pkg-config libsqlite3-devel zlib-devel libcurl-devel oniguruma-devel
+        else
+            echo "Unsupported package manager!"
+            exit 1
+        fi
+    # Download PHP
+    git clone https://gitee.com/mirrors/php -b PHP-$php_version
+    cd php
+    # Configure PHP
+    ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
+    if [ $? -ne 0 ]; then
+        echo "Failed to configure PHP!"
+        exit 1
+    fi
+    # Compile and install PHP
+    make -j8 && sudo make install
+    if [ $? -ne 0 ]; then
+        echo "Failed to install PHP!"
+        exit 1
+    fi
+
+
+
 
