@@ -108,7 +108,7 @@ tar -xvf nginx-$nginx_version.tar.gz
 echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
-wget https://$mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+wget https://$mariadb_mirror/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
 tar -xvf mariadb-$mariadb_version.tar.gz
 # Build Nginx
 cd nginx-$nginx_version
