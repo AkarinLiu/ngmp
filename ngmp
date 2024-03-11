@@ -1,209 +1,132 @@
 #!/bin/bash
-clean
-echo "Welecome to the ngmp!"
-# Detect nginx is installed or not
-if [ -f nginx ]; then
-    echo "WARNING: Nginx is installed, if continued, it will be overrided."
-else
-# Detect php is installed or not
-if [ -f php-fpm ]; then
-    echo "WARNING: PHP is installed, if continued, it will be overrided."
-else
-if [ -f mysql ]; then
-    echo "WARNING: MySQL is installed, if continued, it will be overrided."
-else
-if [ -f mariadb ]; then
-    echo "WARNING: MariaDB is installed, if continued, it will be overrided."
-else
-nginx:
-echo "Select Nginx version:"
-echo "1. Latest (1.25.4)"
-echo "2. Stable (1.24.0)"
-echo "3. Legacy (1.22.1)"
-read -p "Please input your choice (1-3):" nginx_version
-if [ "$nginx_version" == "1" ]; then
+clear
+echo "Welecome to NGMP!"
+echo "Select Nginx Version:"
+echo "1. 1.25.4"
+echo "2. 1.24.0"
+echo "3. 1.22.1"
+echo "4. 1.20.2"
+echo "5. 1.18.0"
+read -p "Enter your choice: " nginx_choice
+if [ $nginx_choice -eq 1 ]; then
     nginx_version="1.25.4"
-else
-if [ "$nginx_version" == "2" ]; then
+elif [ $nginx_choice -eq 2 ]; then
     nginx_version="1.24.0"
-else
-if [ "$nginx_version" == "3" ]; then
+elif [ $nginx_choice -eq 3 ]; then
     nginx_version="1.22.1"
+elif [ $nginx_choice -eq 4 ]; then
+    nginx_version="1.20.2"
+elif [ $nginx_choice -eq 5 ]; then
+    nginx_version="1.18.0"
 else
-    echo "Invalid choice!"
-    goto nginx
+    echo "Invalid choice"
+    exit 1
 fi
-:php
-echo "Select PHP version:"
+echo "Select PHP Version:"
 echo "1. 8.3"
 echo "2. 8.2"
 echo "3. 8.1"
 echo "4. 8.0"
 echo "5. 7.4"
-read -p "Please input your choice (1-5):" php_version
-if [ "$php_version" == "1"]; then
+read -p "Enter your choice: " php_choice
+if [ $php_choice -eq 1 ]; then
     php_version="8.3"
-else
-if [ "$php_version" == "2" ]; then
+elif [ $php_choice -eq 2 ]; then
     php_version="8.2"
-else
-if [ "$php_version" == "3" ]; then
+elif [ $php_choice -eq 3 ]; then
     php_version="8.1"
-else
-if [ "$php_version" == "4" ]; then
+elif [ $php_choice -eq 4 ]; then
     php_version="8.0"
-else
-if [ "$php_version" == "5" ]; then
+elif [ $php_choice -eq 5 ]; then
     php_version="7.4"
 else
-    echo "Invalid choice!"
-    goto php
-fi
-:maraidb
-echo "Select MariaDB version:"
-echo "1. Latest (11.4.1)"
-echo "2. Stable (10.11.7)"
-echo "3. Legacy (10.6.17)"
-read -p "Please input your choice (1-4):" mariadb_version
-if [ "$mariadb_version" == "1" ]; then
-    mariadb_version="11.4.1"
-else
-if [ "$mariadb_version" == "2" ]; then
-    mariadb_version="10.11.7"
-else
-if [ "$mariadb_version" == "3" ]; then
-    mariadb_version="10.6.17"
-else
-    echo "Invalid choice!"
-    goto mariadb
-fi
-echo "Nginx version: $nginx_version"
-echo "PHP version: $php_version"
-echo "MariaDB version: $mariadb_version"
-read -p "Do you want to continue? (y/n):" choice
-if [ "$choice" != "n"]; then
-    exit
-else
-if [ "$choice" == "y" ]; then
-    echo "Installation started..."
-    # Install Nginx dependency
-    if [ -f apt ]; then
-        apt update
-        apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev
-    else
-    if [ -f yum ]; then
-        yum update -y
-        yum install -y gcc pcre-devel zlib-devel
-    else
-        echo "Unsupported package manager!"
-        exit 1
-    fi
-    # Download Nginx
-    wget https://nginx.org/download/nginx-$nginx_version.tar.gz
-    tar -xvf nginx-$nginx_version.tar.gz
-    cd nginx-$nginx_version
-    # Configure Nginx
-    ./configure --prefix=/usr/local/nginx --with-http_lua_module --with-http_ssl_module --add-module=src/lua-nginx-module
-    if [ $? -ne 0 ]; then
-        echo "Failed to configure Nginx!"
-        exit 1
-    fi
-    # Compile and install Nginx
-    make && make install
-    if [ $? -ne 0 ]; then
-        echo "Failed to install Nginx!"
-        exit 1
-    fi
-    # Create Nginx user
-    useradd -s /sbin/nologin www-data
-    # Install Nginx Service
-    if [ -f systemd ]; then
-        :nginx_service
-        wget -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
-        if [ $? -ne 0 ]; then
-            goto nginx_service
-        fi
-        systemctl enable --now nginx
-    else
-        echo "Unsupported systemd!"
-    fi
-    # Install PHP Dependency
-    if [ -f apt ]; then
-        apt install -y libxml2-dev libssl-dev git autoconf bison re2c pkg-config libsqlite3-dev zlib1g-dev libcurl4-openssl-dev libonig-dev
-    else
-        if [ -f yum ]; then
-            yum install -y libxml2-devel openssl-devel git autoconf bison re2c pkg-config libsqlite3-devel zlib-devel libcurl-devel oniguruma-devel
-        else
-            echo "Unsupported package manager!"
-            exit 1
-        fi
-    # Download PHP
-    git clone https://gitee.com/mirrors/php -b PHP-$php_version
-    cd php
-    # Configure PHP
-    ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
-    if [ $? -ne 0 ]; then
-        echo "Failed to configure PHP!"
-        exit 1
-    fi
-    # Compile and install PHP
-    make && make install
-    if [ $? -ne 0 ]; then
-        echo "Failed to install PHP!"
-        exit 1
-    fi
-    # Configure PHP-FPM
-    if [ -f systemd ]; then
-        :php_fpm_service
-        wget -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
-        if [ $? -ne 0 ]; then
-            goto php_fpm_service
-        fi
-        systemctl enable --now php-fpm
-    else
-        echo "Unsupported systemd!"
-    fi
-    # Install MariaDB Denpendency
-    if [ -f apt ]; then
-        apt install libboost-dev libreadline-dev  libssl-dev gcc g++ cmake zlib1g-dev
-        else
-        if [ -f yum ]; then
-            yum install boost-devel readline-devel openssl-devel gcc gcc-c++ cmake zlib-devel
-        else
-            echo "Unsupported package manager!"
-            exit 1
-        fi
-    fi
-    # Download MariaDB
-    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
-    tar -xzf mariadb-$mariadb_version.tar.gz
-    cd mariadb-$mariadb_version
-    # Configure MariaDB
-    cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb -DMYSQL_DATADIR=/usr/local/mariadb/data -DMYSQL_UNIX_ADDR=/usr/local/mariadb/mysql.sock -DMYSQL_TCP_PORT=3306 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 
-    # Compile and install MariaDB
-    make && make install
-    if [ $? -ne 0 ]; then
-        echo "Failed to install MariaDB!"
-        exit 1
-    fi
-    # Configure MariaDB
-    cp support-files/my-default.cnf /etc/my.cnf
-    sed -i 's/#character-set-server/character-set-server/g' /etc/my.cnf
-    sed -i 's/#collation-server/collation-server/g' /etc/my.cnf
-    sed -i 's/utf8mb4/utf8mb4_general_ci/g' /etc/my.cnf
-    # Initialize MariaDB
-    /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
-    # Configure mariadb services
-    if [ -f systemd ]; then
-        :mariadb_service
-        wget -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
-        if [ $? -ne 0 ]; then
-            goto mariadb_service
-        fi
-        systemctl enable --now mariadb
-    else
-        echo "Unsupported systemd!"
-    fi
-else
+    echo "Invalid choice"
     exit 1
 fi
+echo "Select MariaDB Version:"
+echo "1. 11.4.1"
+echo "2. 10.11.7"
+echo "3. 10.6.17"
+echo "4. 10.5.24"
+echo "5. 10.4.33"
+read -p "Enter your choice: " mariadb_choice
+if [ $mariadb_choice -eq 1 ]; then
+    mariadb_version="11.4.1"
+elif [ $mariadb_choice -eq 2 ]; then
+    mariadb_version="10.11.7"
+elif [ $mariadb_choice -eq 3 ]; then
+    mariadb_version="10.6.17"
+elif [ $mariadb_choice -eq 4 ]; then
+    mariadb_version="10.5.24"
+elif [ $mariadb_choice -eq 5 ]; then
+    mariadb_version="10.4.33"
+else
+    echo "Invalid choice"
+    exit 1
+fi
+echo "Nginx Version: $nginx_version"
+echo "PHP Version: $php_version"
+echo "MariaDB Version: $mariadb_version"
+# Install Dependency
+if [ -f /usr/bin/apt ];
+then
+    apt update
+    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev
+elif [ -f /usr/bin/yum ]
+then
+    yum update -y
+    yum install -y gcc make pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel
+else
+    echo "Unsupported OS"
+    exit 1
+fi
+# Download Nginx
+echo "Downloading Nginx $nginx_version"
+wget https://nginx.org/download/nginx-$nginx_version.tar.gz
+tar -xvf nginx-$nginx_version.tar.gz
+echo "Downloading PHP $php_version"
+git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
+echo "Downloading MariaDB $mariadb_version"
+wget https://downloads.mariadb.com/MariaDB/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+tar -xvf mariadb-$mariadb_version.tar.gz
+# Build Nginx
+cd nginx-$nginx_version
+./configure --prefix=/usr/local/nginx --with-http_lua_module --with-http_ssl_module --add-module=src/lua-nginx-module
+make -j4 make install
+# Build PHP
+cd ../php
+./buildconf
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
+make -j4 make install
+# Build MariaDB
+cd ../mariadb-$mariadb_version
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb -DMYSQL_DATADIR=/usr/local/mariadb/data -DMYSQL_UNIX_ADDR=/usr/local/mariadb/mysql.sock -DMYSQL_TCP_PORT=3306 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 
+make -j4 make install
+# Configure MariaDB
+sed -i 's/#innodb_file_per_table/innodb_file_per_table/g' /etc/my.cnf
+sed -i 's/#innodb_log_file_size/innodb_log_file_size/g' /etc/my.cnf
+sed -i 's/#innodb_buffer_pool_size/innodb_buffer_pool_size/g' /etc/my.cnf
+sed -i 's/#innodb_flush_log_at_trx_commit/innodb_flush_log_at_trx_commit/g' /etc/my.cnf
+sed -i 's/#innodb_lock_wait_timeout/innodb_lock_wait_timeout/g' /etc/my.cnf
+sed -i 's/#max_connections/max_connections/g' /etc/my.cnf
+sed -i 's/#query_cache_size/query_cache_size/g' /etc/my.cnf
+sed -i 's/#query_cache_type/query_cache_type/g' /etc/my.cnf
+sed -i 's/#query_cache_limit/query_cache_limit/g' /etc/my.cnf
+sed -i 's/#log_bin/log_bin/g' /etc/my.cnf
+sed -i 's/#log_error/log_error/g' /etc/my.cnf
+sed -i 's/#log_queries_not_using_indexes/log_queries_not_using_indexes/g' /etc/my.cnf
+sed -i 's/#log_slow_queries/log_slow_queries/g' /etc/my.cnf
+sed -i 's/#long_query_time/long_query_time/g' /etc/my.cnf
+sed -i 's/#expire_logs_days/expire_logs_days/g' /etc/my.cnf
+sed -i 's/#max_binlog_size/max_binlog_size/g' /etc/my.cnf
+sed -i 's/#character-set-server/character-set-server/g' /etc/my.cnf
+sed -i 's/#collation-server/collation-server/g' /etc/my.cnf
+sed -i 's/utf8mb4/utf8mb4_general_ci/g' /etc/my.cnf
+# Install Service
+wget -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+wget -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+wget -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
+systemctl daemon-reload
+systemctl enable --now  nginx.service
+systemctl enable --now  php-fpm.service
+systemctl enable --now  mariadb.service
