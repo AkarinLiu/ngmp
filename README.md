@@ -16,8 +16,21 @@
 | 硬盘 | 20GB 以上 |
 
 ## 安装
+
+*注意：请使用Root身份运行这个脚本！！*
+
+### 在线安装
+
 ```bash
 wget https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
+```
+
+### 离线安装
+
+```bash
+git clone https://github.com/AkarinLiu/ngmp.git
+cd ngmp
+bash ngmp
 ```
 
 ## 鸣谢
