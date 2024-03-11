@@ -94,12 +94,12 @@ tar -xvf mariadb-$mariadb_version.tar.gz
 # Build Nginx
 cd nginx-$nginx_version
 ./configure --prefix=/usr/local/nginx --with-http_lua_module --with-http_ssl_module --add-module=src/lua-nginx-module
-make -j4 make install
+make -j4 && make install
 # Build PHP
 cd ../php
 ./buildconf
 ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
-make -j4 make install
+make -j4 && make install
 # Build MariaDB
 cd ../mariadb-$mariadb_version
 cmake . \
@@ -116,7 +116,7 @@ cmake . \
 -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
 -DDEFAULT_CHARSET=utf8mb4 \
 -DDEFAULT_COLLATION=utf8mb4_general_ci
-make -j4 make install
+make -j4 && make install
 sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
 sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
 sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
