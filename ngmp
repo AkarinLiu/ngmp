@@ -102,6 +102,17 @@ make -j4 make install
 cd ../mariadb-$mariadb_version
 cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb -DMYSQL_DATADIR=/usr/local/mariadb/data -DMYSQL_UNIX_ADDR=/usr/local/mariadb/mysql.sock -DMYSQL_TCP_PORT=3306 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 
 make -j4 make install
+# Add PATH
+ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+ln -sf /usr/local/php/sbin/php /usr/local/sbin/php
+ln -sf /usr/local/php/sbin/php-fpm /usr/local/sbin/php-fpm
+ln -sf /usr/local/mariadb/bin/mysql /usr/local/sbin/mysql
+ln -sf /usr/local/mariadb/bin/mysqld /usr/local/sbin/mysqld
+ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/sbin/mysqldump
+ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/sbin/mysqlimport
+ln -sf /usr/local/mariadb/bin/mysqlshow /usr/local/sbin/mysqlshow
+ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/sbin/mysqlcheck
+ln -sf /usr/local/mariadb/bin/mysqlslap /usr/local/sbin/mysqlslap
 # Install Service
 wget -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
