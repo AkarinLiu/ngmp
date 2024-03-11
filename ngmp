@@ -64,20 +64,12 @@ else
     echo "Invalid choice"
     exit 1
 fi
-echo "Select MariaDB Download Mirror:"
-echo "1. downloads.mariadb.com"
-echo "2. mirrors.aliyun.com"
-echo "3. mirrors.cloud.tencent.com"
-read -p "Enter your choice: " mariadb_mirror_choice
-if [ $mariadb_mirror_choice -eq 1 ]; then
-    mariadb_mirror="downloads.mariadb.com"
-elif [ $mariadb_mirror_choice -eq 2 ]; then
-    mariadb_mirror="mirrors.aliyun.com"
-elif [ $mariadb_mirror_choice -eq 3 ]; then
-    mariadb_mirror="mirrors.cloud.tencent.com"
+echo "MariaDB Using binary install? [Y/n]"
+read -p "Enter your choice: " mariadb_binary_choice
+if [ $mariadb_binary_choice == "Y" -o $mariadb_binary_choice == "y" ]; then
+    mariadb_binary="true"
 else
-    echo "Invalid choice"
-    exit 1
+    mariadb_binary="false"
 fi
 start=$(date +%s)
 echo "Installing Nginx, PHP, and MariaDB..."
@@ -105,8 +97,14 @@ tar -xvf nginx-$nginx_version.tar.gz
 echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
-wget https://$mariadb_mirror/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
-tar -xvf mariadb-$mariadb_version.tar.gz
+if [ "$mariadb_binary" == "true" ]; then
+    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
+    tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
+else
+    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    tar -xvf mariadb-$mariadb_version.tar.gz
+fi
+
 # Build Nginx
 cd nginx-$nginx_version
 ./configure --prefix=/usr/local/nginx --with-http_ssl_module --add-module=src/lua-nginx-module
@@ -117,23 +115,30 @@ cd ../php
 ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
 make -j4 && make install
 # Build MariaDB
-cd ../mariadb-$mariadb_version
-cmake . \
--DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \
--DMYSQL_DATADIR=/usr/local/mariadb/data \
--DSYSCONFDIR=/etc \
--DWITH_INNOBASE_STORAGE_ENGINE=1 \
--DWITH_READLINE=1 \
--DWITH_SSL=system \
--DWITH_ZLIB=system \
--DWITH_LIBWRAP=0 \
--DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
--DDEFAULT_CHARSET=utf8mb4 \
--DDEFAULT_COLLATION=utf8mb4_general_ci
-make -j4 && make install
-sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
-sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
-sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
+if [ "$mariadb_binary" == "true" ]; then
+    mv /mariadb-$mariadb_version-linux-systemd-x86_64 /usr/local/mariadb
+    chown -R mysql:mysql /usr/local/mariadb
+    chmod -R 755 /usr/local/mariadb
+    /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+else
+    cd ../mariadb-$mariadb_version
+    cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \
+    -DMYSQL_DATADIR=/usr/local/mariadb/data \
+    -DSYSCONFDIR=/etc \
+    -DWITH_INNOBASE_STORAGE_ENGINE=1 \
+    -DWITH_READLINE=1 \
+    -DWITH_SSL=system \
+    -DWITH_ZLIB=system \
+    -DWITH_LIBWRAP=0 \
+    -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
+    -DDEFAULT_CHARSET=utf8mb4 \
+    -DDEFAULT_COLLATION=utf8mb4_general_ci
+    make -j4 && make install
+    sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+    sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
+    sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
+fi
 # Add PATH
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
 ln -sf /usr/local/php/sbin/php /usr/local/sbin/php
