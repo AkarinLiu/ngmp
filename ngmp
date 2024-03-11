@@ -68,7 +68,6 @@ echo "Select MariaDB Download Mirror:"
 echo "1. downloads.mariadb.com"
 echo "2. mirrors.aliyun.com"
 echo "3. mirrors.cloud.tencent.com"
-echo "4. mirrors.huaweicloud.com"
 read -p "Enter your choice: " mariadb_mirror_choice
 if [ $mariadb_mirror_choice -eq 1 ]; then
     mariadb_mirror="downloads.mariadb.com"
@@ -76,8 +75,6 @@ elif [ $mariadb_mirror_choice -eq 2 ]; then
     mariadb_mirror="mirrors.aliyun.com"
 elif [ $mariadb_mirror_choice -eq 3 ]; then
     mariadb_mirror="mirrors.cloud.tencent.com"
-elif [ $mariadb_mirror_choice -eq 4 ]; then
-    mariadb_mirror="mirrors.huaweicloud.com"
 else
     echo "Invalid choice"
     exit 1
