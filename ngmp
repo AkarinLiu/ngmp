@@ -64,6 +64,7 @@ else
     echo "Invalid choice"
     exit 1
 fi
+start=$(date +%s)
 echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
 echo "PHP Version: $php_version"
@@ -139,3 +140,9 @@ systemctl daemon-reload
 systemctl enable --now  nginx.service
 systemctl enable --now  php-fpm.service
 systemctl enable --now  mariadb.service
+end=$(date +%s)
+duration=$((end - start))
+hours=$((duration / 3600))
+minutes=$(((duration % 3600) / 60 ))
+seconds=$((duration % 60))
+echo "Install finished in $hours hours $minutes minutes $seconds seconds"
