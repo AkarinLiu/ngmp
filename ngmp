@@ -204,4 +204,6 @@ if [ "$choice" == "y" ]; then
     else
         echo "Unsupported systemd!"
     fi
+else
+    exit 1
 fi
