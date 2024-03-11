@@ -19,7 +19,7 @@ nginx:
 echo "Select Nginx version:"
 echo "1. Latest (1.25.4)"
 echo "2. Stable (1.24.0)"
-echo "3. Legacy (1.22.0)"
+echo "3. Legacy (1.22.1)"
 read -p "Please input your choice (1-3):" nginx_version
 if [ "$nginx_version" == "1" ]; then
     nginx_version="1.25.4"
@@ -28,7 +28,7 @@ if [ "$nginx_version" == "2" ]; then
     nginx_version="1.24.0"
 else
 if [ "$nginx_version" == "3" ]; then
-    nginx_version="1.22.0"
+    nginx_version="1.22.1"
 else
     echo "Invalid choice!"
     goto nginx
@@ -61,22 +61,18 @@ else
 fi
 :maraidb
 echo "Select MariaDB version:"
-echo "1. Latest (11.5.10)"
-echo "2. Stable (10.11.29)"
-echo "3. Legacy (10.7.38)"
-echo "4. Legacy (10.6.15)"
+echo "1. Latest (11.4.1)"
+echo "2. Stable (10.11.7)"
+echo "3. Legacy (10.6.17)"
 read -p "Please input your choice (1-4):" mariadb_version
 if [ "$mariadb_version" == "1" ]; then
-    mariadb_version="11.5.10"
+    mariadb_version="11.4.1"
 else
 if [ "$mariadb_version" == "2" ]; then
-    mariadb_version="10.11.29"
+    mariadb_version="10.11.7"
 else
 if [ "$mariadb_version" == "3" ]; then
-    mariadb_version="10.7.38"
-else
-if [ "$mariadb_version" == "4" ]; then
-    mariadb_version="10.6.15"
+    mariadb_version="10.6.17"
 else
     echo "Invalid choice!"
     goto mariadb
@@ -85,16 +81,19 @@ echo "Nginx version: $nginx_version"
 echo "PHP version: $php_version"
 echo "MariaDB version: $mariadb_version"
 read -p "Do you want to continue? (y/n):" choice
+if [ "$choice" != "n"]; then
+    exit
+else
 if [ "$choice" == "y" ]; then
     echo "Installation started..."
     # Install Nginx dependency
     if [ -f apt ]; then
-        sudo apt update
-        sudo apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev
+        apt update
+        apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev
     else
     if [ -f yum ]; then
-        sudo yum update -y
-        sudo yum install -y gcc pcre-devel zlib-devel
+        yum update -y
+        yum install -y gcc pcre-devel zlib-devel
     else
         echo "Unsupported package manager!"
         exit 1
@@ -110,19 +109,30 @@ if [ "$choice" == "y" ]; then
         exit 1
     fi
     # Compile and install Nginx
-    make -j8 && sudo make install
+    make && make install
     if [ $? -ne 0 ]; then
         echo "Failed to install Nginx!"
         exit 1
     fi
     # Create Nginx user
-    sudo useradd -s /sbin/nologin www-data
+    useradd -s /sbin/nologin www-data
+    # Install Nginx Service
+    if [ -f systemd ]; then
+        :nginx_service
+        wget -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+        if [ $? -ne 0 ]; then
+            goto nginx_service
+        fi
+        systemctl enable --now nginx
+    else
+        echo "Unsupported systemd!"
+    fi
     # Install PHP Dependency
     if [ -f apt ]; then
-        sudo apt install -y libxml2-dev libssl-dev git autoconf bison re2c pkg-config libsqlite3-dev zlib1g-dev libcurl4-openssl-dev libonig-dev
+        apt install -y libxml2-dev libssl-dev git autoconf bison re2c pkg-config libsqlite3-dev zlib1g-dev libcurl4-openssl-dev libonig-dev
     else
         if [ -f yum ]; then
-            sudo yum install -y libxml2-devel openssl-devel git autoconf bison re2c pkg-config libsqlite3-devel zlib-devel libcurl-devel oniguruma-devel
+            yum install -y libxml2-devel openssl-devel git autoconf bison re2c pkg-config libsqlite3-devel zlib-devel libcurl-devel oniguruma-devel
         else
             echo "Unsupported package manager!"
             exit 1
@@ -137,12 +147,61 @@ if [ "$choice" == "y" ]; then
         exit 1
     fi
     # Compile and install PHP
-    make -j8 && sudo make install
+    make && make install
     if [ $? -ne 0 ]; then
         echo "Failed to install PHP!"
         exit 1
     fi
-
-
-
-
+    # Configure PHP-FPM
+    if [ -f systemd ]; then
+        :php_fpm_service
+        wget -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+        if [ $? -ne 0 ]; then
+            goto php_fpm_service
+        fi
+        systemctl enable --now php-fpm
+    else
+        echo "Unsupported systemd!"
+    fi
+    # Install MariaDB Denpendency
+    if [ -f apt ]; then
+        apt install libboost-dev libreadline-dev  libssl-dev gcc g++ cmake zlib1g-dev
+        else
+        if [ -f yum ]; then
+            yum install boost-devel readline-devel openssl-devel gcc gcc-c++ cmake zlib-devel
+        else
+            echo "Unsupported package manager!"
+            exit 1
+        fi
+    fi
+    # Download MariaDB
+    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    tar -xzf mariadb-$mariadb_version.tar.gz
+    cd mariadb-$mariadb_version
+    # Configure MariaDB
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb -DMYSQL_DATADIR=/usr/local/mariadb/data -DMYSQL_UNIX_ADDR=/usr/local/mariadb/mysql.sock -DMYSQL_TCP_PORT=3306 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 
+    # Compile and install MariaDB
+    make && make install
+    if [ $? -ne 0 ]; then
+        echo "Failed to install MariaDB!"
+        exit 1
+    fi
+    # Configure MariaDB
+    cp support-files/my-default.cnf /etc/my.cnf
+    sed -i 's/#character-set-server/character-set-server/g' /etc/my.cnf
+    sed -i 's/#collation-server/collation-server/g' /etc/my.cnf
+    sed -i 's/utf8mb4/utf8mb4_general_ci/g' /etc/my.cnf
+    # Initialize MariaDB
+    /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+    # Configure mariadb services
+    if [ -f systemd ]; then
+        :mariadb_service
+        wget -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
+        if [ $? -ne 0 ]; then
+            goto mariadb_service
+        fi
+        systemctl enable --now mariadb
+    else
+        echo "Unsupported systemd!"
+    fi
+fi
