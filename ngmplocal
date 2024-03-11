@@ -102,26 +102,6 @@ make -j4 make install
 cd ../mariadb-$mariadb_version
 cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb -DMYSQL_DATADIR=/usr/local/mariadb/data -DMYSQL_UNIX_ADDR=/usr/local/mariadb/mysql.sock -DMYSQL_TCP_PORT=3306 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DWITH_INNOBASE_STORAGE_ENGINE=1 
 make -j4 make install
-# Configure MariaDB
-sed -i 's/#innodb_file_per_table/innodb_file_per_table/g' /etc/my.cnf
-sed -i 's/#innodb_log_file_size/innodb_log_file_size/g' /etc/my.cnf
-sed -i 's/#innodb_buffer_pool_size/innodb_buffer_pool_size/g' /etc/my.cnf
-sed -i 's/#innodb_flush_log_at_trx_commit/innodb_flush_log_at_trx_commit/g' /etc/my.cnf
-sed -i 's/#innodb_lock_wait_timeout/innodb_lock_wait_timeout/g' /etc/my.cnf
-sed -i 's/#max_connections/max_connections/g' /etc/my.cnf
-sed -i 's/#query_cache_size/query_cache_size/g' /etc/my.cnf
-sed -i 's/#query_cache_type/query_cache_type/g' /etc/my.cnf
-sed -i 's/#query_cache_limit/query_cache_limit/g' /etc/my.cnf
-sed -i 's/#log_bin/log_bin/g' /etc/my.cnf
-sed -i 's/#log_error/log_error/g' /etc/my.cnf
-sed -i 's/#log_queries_not_using_indexes/log_queries_not_using_indexes/g' /etc/my.cnf
-sed -i 's/#log_slow_queries/log_slow_queries/g' /etc/my.cnf
-sed -i 's/#long_query_time/long_query_time/g' /etc/my.cnf
-sed -i 's/#expire_logs_days/expire_logs_days/g' /etc/my.cnf
-sed -i 's/#max_binlog_size/max_binlog_size/g' /etc/my.cnf
-sed -i 's/#character-set-server/character-set-server/g' /etc/my.cnf
-sed -i 's/#collation-server/collation-server/g' /etc/my.cnf
-sed -i 's/utf8mb4/utf8mb4_general_ci/g' /etc/my.cnf
 # Install Service
 cp nginx.service /etc/systemd/system/nginx.service
 cp php-fpm.service /etc/systemd/system/php-fpm.service
