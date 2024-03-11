@@ -1,0 +1,15 @@
+[Unit]
+Description=MariaDB Server
+After=network.target
+
+[Service]
+User=mysql
+Group=mysql
+ExecStart=/usr/local/sbin/mariadbd --daemonize --pid-file=/var/run/mariadb/mariadb.pid
+ExecReload=/bin/kill -s HUP $MAINPID
+ExeStop=/bin/kill -s QUIT $MAINPID
+Restart=always
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
