@@ -17,4 +17,4 @@
 
 ## 安装
 ```bash
-wget https://raw.githubusercontent.com/AkarinLiu/NGMP/main/ngmp && bash ngmp
+wget https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
