@@ -18,3 +18,8 @@
 ## 安装
 ```bash
 wget https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
+```
+
+## 鸣谢
+- [CodeGeeX](https://codegeex.com)
+- [智谱轻言](https://chatglm.cn)
