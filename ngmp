@@ -64,6 +64,9 @@ else
     echo "Invalid choice"
     exit 1
 fi
+echo "Typing MariaDB Root Password:"
+read -s mariadb_root_password
+echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
 echo "PHP Version: $php_version"
 echo "MariaDB Version: $mariadb_version"
@@ -115,8 +118,11 @@ cmake . \
 -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
 -DDEFAULT_CHARSET=utf8mb4 \
 -DDEFAULT_COLLATION=utf8mb4_general_ci
-
 make -j4 make install
+sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
+sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
+sudo /usr/local/mariadb/bin/mysqladmin -u root password '$mariadb_root_password'
 # Add PATH
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
 ln -sf /usr/local/php/sbin/php /usr/local/sbin/php
