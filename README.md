@@ -20,7 +20,7 @@
 *注意：请使用Root身份运行这个脚本！！*
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp | bash -s
+wget https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp | bash 
 ```
 
 ## 已知问题
