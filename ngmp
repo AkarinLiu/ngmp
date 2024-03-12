@@ -8,17 +8,29 @@ echo "3. 1.22.1"
 echo "4. 1.20.2"
 echo "5. 1.18.0"
 read -p "Enter your choice: " nginx_choice
-if [ $nginx_choice -eq 1 ]; then
-    nginx_version="1.25.4"
-elif [ $nginx_choice -eq 2 ]; then
-    nginx_version="1.24.0"
-elif [ $nginx_choice -eq 3 ]; then
-    nginx_version="1.22.1"
-elif [ $nginx_choice -eq 4 ]; then
-    nginx_version="1.20.2"
-elif [ $nginx_choice -eq 5 ]; then
-    nginx_version="1.18.0"
-fi
+nginx_choice=$1
+
+case $nginx_choice in
+    1)
+        nginx_version="1.25.4"
+        ;;
+    2)
+        nginx_version="1.24.0"
+        ;;
+    3)
+        nginx_version="1.22.1"
+        ;;
+    4)
+        nginx_version="1.20.2"
+        ;;
+    5)
+        nginx_version="1.18.0"
+        ;;
+    *)
+        echo "Invalid choice"
+        exit 1
+        ;;
+esac
 echo "Select PHP Version:"
 echo "1. 8.3"
 echo "2. 8.2"
@@ -26,17 +38,28 @@ echo "3. 8.1"
 echo "4. 8.0"
 echo "5. 7.4"
 read -p "Enter your choice: " php_choice
-if [ $php_choice -eq 1 ]; then
-    php_version="8.3"
-elif [ $php_choice -eq 2 ]; then
-    php_version="8.2"
-elif [ $php_choice -eq 3 ]; then
-    php_version="8.1"
-elif [ $php_choice -eq 4 ]; then
-    php_version="8.0"
-elif [ $php_choice -eq 5 ]; then
-    php_version="7.4"
-fi
+php_choice=$2
+case $php_choice in
+    1)
+        php_version="8.3"
+        ;;
+    2)
+        php_version="8.2"
+        ;;
+    3)
+        php_version="8.1"
+        ;;
+    4)
+        php_version="8.0"
+        ;;
+    5)
+        php_version="7.4"
+        ;;
+    *)
+        echo "Invalid choice"
+        exit 1
+        ;;
+esac
 echo "Select MariaDB Version:"
 echo "1. 11.4.1"
 echo "2. 10.11.7"
@@ -44,17 +67,28 @@ echo "3. 10.6.17"
 echo "4. 10.5.24"
 echo "5. 10.4.33"
 read -p "Enter your choice: " mariadb_choice
-if [ $mariadb_choice -eq 1 ]; then
-    mariadb_version="11.4.1"
-elif [ $mariadb_choice -eq 2 ]; then
-    mariadb_version="10.11.7"
-elif [ $mariadb_choice -eq 3 ]; then
-    mariadb_version="10.6.17"
-elif [ $mariadb_choice -eq 4 ]; then
-    mariadb_version="10.5.24"
-elif [ $mariadb_choice -eq 5 ]; then
-    mariadb_version="10.4.33"
-fi
+mariadb_choice=$3
+case $mariadb_choice in
+    1)
+        mariadb_version="11.4.1"
+        ;;
+    2)
+        mariadb_version="10.11.7"
+        ;;
+    3)
+        mariadb_version="10.6.17"
+        ;;
+    4)
+        mariadb_version="10.5.24"
+        ;;
+    5)
+        mariadb_version="10.4.33"
+        ;;
+    *)
+        echo "Invalid choice"
+        exit 1
+        ;;
+esac
 echo "MariaDB Using binary install? [Y/n]"
 read -p "Enter your choice: " mariadb_binary_choice
 if [ $mariadb_binary_choice == "Y" -o $mariadb_binary_choice == "y" ]; then
