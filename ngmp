@@ -106,24 +106,10 @@ else
     echo "Unsupported OS"
     exit 1
 fi
-# Download & Install LuaJit 
-echo "Downloading LuaJit"
-git clone https://repo.or.cz/luajit-2.0.git
-cd luajit-2.0
-make && make install
-export LUAJIT_INC=/usr/local/include/luajit-2.1
-export LUAJIT_LIB=/usr/local/lib
-cd ..
 # Download Nginx
 echo "Downloading Nginx $nginx_version"
 wget --no-clobber https://nginx.org/download/nginx-$nginx_version.tar.gz
 tar -xvf nginx-$nginx_version.tar.gz
-# Download Nginx Lua Modules
-echo "Downloading Nginx Lua Modules"
-cd nginx-$nginx_version
-git clone https://gitee.com/mirrors/ngx_devel_kit.git
-git clone https://gitee.com/mirrors/lua-nginx-module.git
-cd ..
 # Download PHP and MariaDB
 echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
@@ -137,7 +123,7 @@ else
 fi
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --add-module=./ngx_devel_kit --add-module=./lua-nginx-module
+./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/"
 make && make install
 # Build PHP
 cd ../php
@@ -149,7 +135,23 @@ if [ "$mariadb_binary" == "true" ]; then
     mv mariadb-$mariadb_version-linux-systemd-x86_64 /usr/local/mariadb
     chown -R mysql:mysql /usr/local/mariadb
     chmod -R 755 /usr/local/mariadb
+    groupadd -u 162 mysql
+    useradd -u 162 -s /sbin/nologin mysql
     /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+    # Add PATH
+    ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+    ln -sf /usr/local/php/sbin/php /usr/local/bin/php
+    ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
+    ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
+    ln -sf /usr/local/mariadb/bin/mysqladmin /usr/local/bin/mysqladmin
+    ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
+    ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
+    ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
+    ln -sf /usr/local/mariadb/bin/mariadb /usr/local/bin/mariadb
+    ln -sf /usr/local/mariadb/bin/mariadbd /usr/local/bin/mariadbd
+    ln -sf /usr/local/mariadb/bin/mariadbimport /usr/local/bin/mariadbimport
+    ln -sf /usr/local/mariadb/bin/mariadbadmin /usr/local/bin/mariadbadmin
+    ln -sf /usr/local/mariadb/bin/mariadbdump /usr/local/bin/mariadbdump
 else
     cd ../mariadb-$mariadb_version
     cmake . \
@@ -168,16 +170,10 @@ else
     sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
     sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
     sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
+    groupadd -u 162 mysql
+    useradd -u 162 -s /sbin/nologin mysql
 fi
-# Add PATH
-ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
-ln -sf /usr/local/php/sbin/php /usr/local/bin/php
-ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
-ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
-ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
-ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
-ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
-ln -sf /usr/local/mariadb
+
 
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
