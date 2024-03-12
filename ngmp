@@ -86,6 +86,13 @@ if [ $mariadb_binary_choice == "Y" ] || [ $mariadb_binary_choice == "y" ]; then
 else
     mariadb_binary="false"
 fi
+echo "Enable Nginx Lua Extension? [Y/n]"
+read -p "Enter your choice: " nginx_lua_choice
+if [ $nginx_lua_choice == "Y" ] || [ $nginx_lua_choice == "y" ]; then
+    nginx_lua="true"
+else
+    nginx_lua="false"
+fi
 echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
 echo "PHP Version: $php_version"
@@ -123,7 +130,20 @@ else
 fi
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/"
+if [ $nginx_lua == "true" ]; then
+    git clone https://repo.or.cz/luajit-2.0.git
+    cd luajit-2.0.git
+    make 
+    make install PREFIX=/usr/local/luajit
+    export LUAJIT_LIB=/usr/local/luajit/lib
+    export LUAJIT_INC=/usr/local/luajit/include/luajit-2.1
+    cd ..
+    git clone https://gitclone.com/github.com/simplresty/ngx_devel_kit
+    git clone https://gitclone.com/github.com/openresty/lua-nginx-module
+    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --add-module=./ngx_devel_kit --add-module=./lua-nginx-module
+else
+    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/"
+fi
 make && make install
 # Build PHP
 cd ../php
