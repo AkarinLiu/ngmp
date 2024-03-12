@@ -107,7 +107,7 @@ fi
 
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module --add-module=src/lua-nginx-module
+./configure --prefix=/usr/local/nginx --with-http_ssl_module
 make && make install
 # Build PHP
 cd ../php
