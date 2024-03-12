@@ -115,7 +115,7 @@ git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
 if [ $mariadb_binary == "true" ]; then
     wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
-    tar -xvf mariadb-$mariadb_version-linux-x86_64.tar.gz
+    tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
 else
     wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
     tar -xvf mariadb-$mariadb_version.tar.gz
