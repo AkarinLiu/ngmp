@@ -121,7 +121,6 @@ if [ "$mariadb_binary" == "false" ]; then
     wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
     tar -xvf mariadb-$mariadb_version.tar.gz
 fi
-
 # Build Nginx
 cd nginx-$nginx_version
 if [ $nginx_lua == "true" ]; then
