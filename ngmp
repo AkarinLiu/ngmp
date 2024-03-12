@@ -138,20 +138,6 @@ if [ "$mariadb_binary" == "true" ]; then
     groupadd -u 162 mysql
     useradd -u 162 -s /sbin/nologin mysql
     /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
-    # Add PATH
-    ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
-    ln -sf /usr/local/php/sbin/php /usr/local/bin/php
-    ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
-    ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
-    ln -sf /usr/local/mariadb/bin/mysqladmin /usr/local/bin/mysqladmin
-    ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
-    ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
-    ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
-    ln -sf /usr/local/mariadb/bin/mariadb /usr/local/bin/mariadb
-    ln -sf /usr/local/mariadb/bin/mariadbd /usr/local/bin/mariadbd
-    ln -sf /usr/local/mariadb/bin/mariadbimport /usr/local/bin/mariadbimport
-    ln -sf /usr/local/mariadb/bin/mariadbadmin /usr/local/bin/mariadbadmin
-    ln -sf /usr/local/mariadb/bin/mariadbdump /usr/local/bin/mariadbdump
 else
     cd ../mariadb-$mariadb_version
     cmake . \
@@ -173,8 +159,20 @@ else
     groupadd -u 162 mysql
     useradd -u 162 -s /sbin/nologin mysql
 fi
-
-
+# Add PATH
+ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+ln -sf /usr/local/php/sbin/php /usr/local/bin/php
+ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
+ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
+ln -sf /usr/local/mariadb/bin/mysqladmin /usr/local/bin/mysqladmin
+ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
+ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
+ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
+ln -sf /usr/local/mariadb/bin/mariadb /usr/local/bin/mariadb
+ln -sf /usr/local/mariadb/bin/mariadbd /usr/local/bin/mariadbd
+ln -sf /usr/local/mariadb/bin/mariadbimport /usr/local/bin/mariadbimport
+ln -sf /usr/local/mariadb/bin/mariadbadmin /usr/local/bin/mariadbadmin
+ln -sf /usr/local/mariadb/bin/mariadbdump /usr/local/bin/mariadbdump
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
