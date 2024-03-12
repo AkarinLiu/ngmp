@@ -169,16 +169,10 @@ else
 fi
 # Add PATH
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
-ln -sf /usr/local/php/sbin/php /usr/local/sbin/php
-ln -sf /usr/local/php/sbin/php-fpm /usr/local/sbin/php-fpm
-ln -sf /usr/local/mariadb/bin/mysql /usr/local/sbin/mysql
-ln -sf /usr/local/mariadb/bin/mysqld /usr/local/sbin/mysqld
-ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/sbin/mysqldump
-ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/sbin/mysqlimport
-ln -sf /usr/local/mariadb/bin/mysqlshow /usr/local/sbin/mysqlshow
-ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/sbin/mysqlcheck
-ln -sf /usr/local/mariadb/bin/mysqlslap /usr/local/sbin/mysqlslap
-ln -sf /usr/local/mariadb/bin/mysql_secure_installation /usr/local/sbin/mysql_secure_installation
+ln -sf /usr/local/php/sbin/php /usr/local/bin/php
+ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
+ln -sf /usr/local/mariadb/bin/mysql* /usr/local/bin/
+ln -sf /usr/local/mariadb/bin/mariadb* /usr/local/bin/
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
