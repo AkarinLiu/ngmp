@@ -23,6 +23,13 @@
 curl -fsSL https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp | bash -s
 ```
 
+## 已知问题
+
+以下是已知问题列表，欢迎提交 [Pull Request](https://github.com/AkarinLiu/ngmp/compare) 来修复这些问题。
+
+- [ ] 在 AlmaLinux 9 上，无法正常安装。
+- [ ] 在 Debian 11 上，无法正常安装。
+
 ## 鸣谢
 - [CodeGeeX](https://codegeex.com)
 - [智谱轻言](https://chatglm.cn)
