@@ -99,7 +99,7 @@ else
 fi
 # Download Nginx
 echo "Downloading Nginx $nginx_version"
-wget https://nginx.org/download/nginx-$nginx_version.tar.gz
+wget --no-clobber https://nginx.org/download/nginx-$nginx_version.tar.gz
 tar -xvf nginx-$nginx_version.tar.gz
 # Download Nginx Lua Modules
 if [ $nginx_lua == "true" ]; then
@@ -115,10 +115,16 @@ echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
 if [ "$mariadb_binary" == "true" ]; then
-    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
+    wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
+    if [ $? -ne 0 ]; then
+        echo "Failed to download MariaDB"
+        exit 1
     tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
 else
-    wget https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    if [ $? -ne 0 ]; then
+        echo "Failed to download MariaDB"
+        exit 1
     tar -xvf mariadb-$mariadb_version.tar.gz
 fi
 
@@ -172,9 +178,9 @@ ln -sf /usr/local/mariadb/bin/mysqlshow /usr/local/bin/mysqlshow
 ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
 ln -sf /usr/local/mariadb/bin/mysqlslap /usr/local/bin/mysqlslap
 # Install Service
-wget -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
-wget -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
-wget -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
+wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+wget --no-clobber -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
 systemctl daemon-reload
 systemctl enable --now  nginx.service
 systemctl enable --now  php-fpm.service
