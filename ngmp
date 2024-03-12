@@ -90,8 +90,8 @@ echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
 echo "PHP Version: $php_version"
 echo "MariaDB Version: $mariadb_version"
-mkdir $HOME/ngmp
-cd $HOME/ngmp
+mkdir $HOME/ngmp-data
+cd $HOME/ngmp-data
 # Install Dependency
 if [ -f /usr/bin/apt ];
 then
@@ -130,7 +130,7 @@ if [ $mariadb_binary == "true" ]; then
     wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
     tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
 else
-    wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
     tar -xvf mariadb-$mariadb_version.tar.gz
 fi
 # Build Nginx
@@ -187,3 +187,4 @@ mv composer.phar /usr/local/bin/composer
 # End
 echo "Install Complete"
 echo "Please run mysql_secure_installation to configure your MariaDB installation."
+cd 
