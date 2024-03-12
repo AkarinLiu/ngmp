@@ -20,7 +20,7 @@
 *注意：请使用Root身份运行这个脚本！！*
 
 ```bash
-wget https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp | bash 
+wget --no-clobber https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
 ```
 
 ## 已知问题
