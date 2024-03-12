@@ -71,6 +71,13 @@ if [ $mariadb_binary_choice == "Y" -o $mariadb_binary_choice == "y" ]; then
 else
     mariadb_binary="false"
 fi
+echo "Enable Nginx Lua Support? [Y/n]"
+read -p "Enter your choice: " nginx_lua_choice
+if [ $nginx_lua_choice == "Y" -o $nginx_lua_choice == "y" ]; then
+    nginx_lua="true"
+else
+    nginx_lua="false"
+fi
 start=$(date +%s)
 echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
@@ -80,12 +87,12 @@ echo "MariaDB Version: $mariadb_version"
 if [ -f /usr/bin/apt ];
 then
     apt update
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev
+    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev luajit
 elif [ -f /usr/bin/yum ]
 then
     yum update -y
     yum groupinstall "Development Tools"
-    yum install -y gcc make boost-devel  pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel
+    yum install -y gcc make boost-devel  pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel luajit
 else
     echo "Unsupported OS"
     exit 1
@@ -94,6 +101,16 @@ fi
 echo "Downloading Nginx $nginx_version"
 wget https://nginx.org/download/nginx-$nginx_version.tar.gz
 tar -xvf nginx-$nginx_version.tar.gz
+# Download Nginx Lua Modules
+if [ $nginx_lua == "true" ]; then
+    
+    echo "Downloading Nginx Lua Modules"
+    cd nginx-$nginx_version
+    git clone https://gitee.com/mirrors/ngx_devel_kit.git
+    git clone https://gitee.com/mirrors/lua-nginx-module.git
+    cd ..
+fi
+# Download PHP and MariaDB
 echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
@@ -107,7 +124,11 @@ fi
 
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module
+if [ $nginx_lua == "true" ]; then
+    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-zlib --with-openssl=../openssl-1.1.1k --with-openssl-opt='enable-tls1_3' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --add-module=../ngx_devel_kit --add-module=../lua-nginx-module
+else
+    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-zlib --with-openssl=../openssl-1.1.1k --with-openssl-opt='enable-tls1_3' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/"
+fi
 make && make install
 # Build PHP
 cd ../php
