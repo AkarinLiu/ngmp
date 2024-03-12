@@ -8,29 +8,20 @@ echo "3. 1.22.1"
 echo "4. 1.20.2"
 echo "5. 1.18.0"
 read -p "Enter your choice: " nginx_choice
-nginx_choice=$1
-
-case $nginx_choice in
-    1)
-        nginx_version="1.25.4"
-        ;;
-    2)
-        nginx_version="1.24.0"
-        ;;
-    3)
-        nginx_version="1.22.1"
-        ;;
-    4)
-        nginx_version="1.20.2"
-        ;;
-    5)
-        nginx_version="1.18.0"
-        ;;
-    *)
-        echo "Invalid choice"
-        exit 1
-        ;;
-esac
+if [ $nginx_choice -eq 1 ]; then
+    nginx_version="1.25.4"
+elif [ $nginx_choice -eq 2 ]; then
+    nginx_version="1.24.0"
+elif [ $nginx_choice -eq 3 ]; then
+    nginx_version="1.22.1"
+elif [ $nginx_choice -eq 4 ]; then
+    nginx_version="1.20.2"
+elif [ $nginx_choice -eq 5 ]; then
+    nginx_version="1.18.0"
+else
+    echo "Invalid choice"
+    exit 1
+fi
 echo "Select PHP Version:"
 echo "1. 8.3"
 echo "2. 8.2"
@@ -38,28 +29,20 @@ echo "3. 8.1"
 echo "4. 8.0"
 echo "5. 7.4"
 read -p "Enter your choice: " php_choice
-php_choice=$2
-case $php_choice in
-    1)
-        php_version="8.3"
-        ;;
-    2)
-        php_version="8.2"
-        ;;
-    3)
-        php_version="8.1"
-        ;;
-    4)
-        php_version="8.0"
-        ;;
-    5)
-        php_version="7.4"
-        ;;
-    *)
-        echo "Invalid choice"
-        exit 1
-        ;;
-esac
+if [ $php_choice -eq 1 ]; then
+    php_version="8.3"
+elif [ $php_choice -eq 2 ]; then
+    php_version="8.2"
+elif [ $php_choice -eq 3 ]; then
+    php_version="8.1"
+elif [ $php_choice -eq 4 ]; then
+    php_version="8.0"
+elif [ $php_choice -eq 5 ]; then
+    php_version="7.4"
+else
+    echo "Invalid choice"
+    exit 1
+fi
 echo "Select MariaDB Version:"
 echo "1. 11.4.1"
 echo "2. 10.11.7"
@@ -67,38 +50,30 @@ echo "3. 10.6.17"
 echo "4. 10.5.24"
 echo "5. 10.4.33"
 read -p "Enter your choice: " mariadb_choice
-mariadb_choice=$3
-case $mariadb_choice in
-    1)
-        mariadb_version="11.4.1"
-        ;;
-    2)
-        mariadb_version="10.11.7"
-        ;;
-    3)
-        mariadb_version="10.6.17"
-        ;;
-    4)
-        mariadb_version="10.5.24"
-        ;;
-    5)
-        mariadb_version="10.4.33"
-        ;;
-    *)
-        echo "Invalid choice"
-        exit 1
-        ;;
-esac
+if [ $mariadb_choice -eq 1 ]; then
+    mariadb_version="11.4.1"
+elif [ $mariadb_choice -eq 2 ]; then
+    mariadb_version="10.11.7"
+elif [ $mariadb_choice -eq 3 ]; then
+    mariadb_version="10.6.17"
+elif [ $mariadb_choice -eq 4 ]; then
+    mariadb_version="10.5.24"
+elif [ $mariadb_choice -eq 5 ]; then
+    mariadb_version="10.4.33"
+else
+    echo "Invalid choice"
+    exit 1
+fi
 echo "MariaDB Using binary install? [Y/n]"
 read -p "Enter your choice: " mariadb_binary_choice
-if [ $mariadb_binary_choice == "Y" -o $mariadb_binary_choice == "y" ]; then
+if [ $mariadb_binary_choice == "Y" ] || [ $mariadb_binary_choice == "y" ]; then
     mariadb_binary="true"
 else
     mariadb_binary="false"
 fi
 echo "Enable Nginx Lua Support? [Y/n]"
 read -p "Enter your choice: " nginx_lua_choice
-if [ $nginx_lua_choice == "Y" -o $nginx_lua_choice == "y" ]; then
+if [ $nginx_lua_choice == "Y" ] || [ $nginx_lua_choice == "y" ]; then
     nginx_lua="true"
 else
     nginx_lua="false"
@@ -113,7 +88,7 @@ if [ -f /usr/bin/apt ];
 then
     apt update
     apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev luajit
-elif [ -f /usr/bin/yum ]
+elif [ -f /usr/bin/yum ];
 then
     yum update -y
     yum groupinstall "Development Tools"
