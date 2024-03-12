@@ -1,10 +1,15 @@
 [Unit]
-Description=Nginx Server
-After=network.target remote-fs.target nss-lookup.target
+Description=The NGINX HTTP and reverse proxy server
+After=syslog.target network-online.target remote-fs.target nss-lookup.target
+
 [Service]
 Type=forking
-ExecStart=/usr/local/sbin/nginx -s start
+PIDFile=/run/nginx.pid
+ExecStartPre=/usr/local/sbin/nginx -t
+ExecStart=/usr/local/sbin/nginx
 ExecReload=/usr/local/sbin/nginx -s reload
-ExecStop=/usr/local/sbin/nginx -s quit
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
 [Install]
 WantedBy=multi-user.target
