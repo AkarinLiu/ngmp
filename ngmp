@@ -131,7 +131,7 @@ make && make install
 # Build PHP
 cd ../php
 ./buildconf
-./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
 make && make install
 # Build MariaDB
 if [ "$mariadb_binary" == "true" ]; then
