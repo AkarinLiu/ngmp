@@ -79,12 +79,12 @@ echo "MariaDB Version: $mariadb_version"
 if [ -f /usr/bin/apt ];
 then
     apt update
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev luajit
+    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev luajit2
 elif [ -f /usr/bin/yum ];
 then
     yum update -y
     yum groupinstall "Development Tools"
-    yum install -y gcc make boost-devel  pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel luajit
+    yum install -y gcc make boost-devel  pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel luajit2
 else
     echo "Unsupported OS"
     exit 1
