@@ -18,9 +18,6 @@ elif [ $nginx_choice -eq 4 ]; then
     nginx_version="1.20.2"
 elif [ $nginx_choice -eq 5 ]; then
     nginx_version="1.18.0"
-else
-    echo "Invalid choice"
-    exit 1
 fi
 echo "Select PHP Version:"
 echo "1. 8.3"
@@ -39,9 +36,6 @@ elif [ $php_choice -eq 4 ]; then
     php_version="8.0"
 elif [ $php_choice -eq 5 ]; then
     php_version="7.4"
-else
-    echo "Invalid choice"
-    exit 1
 fi
 echo "Select MariaDB Version:"
 echo "1. 11.4.1"
@@ -60,9 +54,6 @@ elif [ $mariadb_choice -eq 4 ]; then
     mariadb_version="10.5.24"
 elif [ $mariadb_choice -eq 5 ]; then
     mariadb_version="10.4.33"
-else
-    echo "Invalid choice"
-    exit 1
 fi
 echo "MariaDB Using binary install? [Y/n]"
 read -p "Enter your choice: " mariadb_binary_choice
