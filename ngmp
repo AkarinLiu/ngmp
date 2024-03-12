@@ -64,6 +64,21 @@ else
     echo "Invalid choice"
     exit 1
 fi
+echo "Select MariaDB Mirror:"
+echo "1. TUNA"
+echo "2. USTC"
+echo "3. Aliyun"
+read -p "Enter your choice: " mariadb_mirror_choice
+if [ $mariadb_mirror_choice -eq 1 ]; then
+    mariadb_mirror="https://mirrors.tuna.tsinghua.edu.cn/mariadb"
+elif [ $mariadb_mirror_choice -eq 2 ]; then
+    mariadb_mirror="https://mirrors.ustc.edu.cn/mariadb"
+elif [ $mariadb_mirror_choice -eq 3 ]; then
+    mariadb_mirror="https://mirrors.aliyun.com/mariadb"
+else
+    echo "Invalid choice"
+    exit 1
+fi
 echo "MariaDB Using binary install? [Y/n]"
 read -p "Enter your choice: " mariadb_binary_choice
 if [ $mariadb_binary_choice == "Y" ] || [ $mariadb_binary_choice == "y" ]; then
@@ -110,7 +125,7 @@ echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
 if [ $mariadb_binary == "true" ]; then
-    wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
+    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
     tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
 else
     wget --no-clobber https://mirrors.aliyun.com/mariadb/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
