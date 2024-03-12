@@ -96,12 +96,12 @@ cd $HOME/ngmp-data
 if [ -f /usr/bin/apt ];
 then
     apt update
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev
+    apt install -y build-essential libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev
 elif [ -f /usr/bin/yum ];
 then
     yum update -y
     yum groupinstall "Development Tools"
-    yum install -y gcc make boost-devel  pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel
+    yum install -y gcc make boost-devel lua-devel pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel
 else
     echo "Unsupported OS"
     exit 1
@@ -111,6 +111,8 @@ echo "Downloading LuaJit"
 git clone https://repo.or.cz/luajit-2.0.git
 cd luajit-2.0
 make && make install
+export LUAJIT_INC=/usr/local/include/luajit-2.1
+export LUAJIT_LIB=/usr/local/lib
 cd ..
 # Download Nginx
 echo "Downloading Nginx $nginx_version"
@@ -135,7 +137,7 @@ else
 fi
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl=../openssl-1.1.1k --with-openssl-opt='enable-tls1_3' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --add-module=./ngx_devel_kit --add-module=./lua-nginx-module
+./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --add-module=./ngx_devel_kit --add-module=./lua-nginx-module
 make && make install
 # Build PHP
 cd ../php
@@ -171,8 +173,12 @@ fi
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
 ln -sf /usr/local/php/sbin/php /usr/local/bin/php
 ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
-ln -sf /usr/local/mariadb/bin/mysql* /usr/local/bin/
-ln -sf /usr/local/mariadb/bin/mariadb* /usr/local/bin/
+ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
+ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
+ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
+ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
+ln -sf /usr/local/mariadb
+
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
