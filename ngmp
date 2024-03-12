@@ -106,8 +106,8 @@ else
 fi
 # Download & Install LuaJit 
 echo "Downloading LuaJit"
-git clone https://luajit.org/git/luajit.git
-cd luajit
+git clone https://repo.or.cz/luajit-2.0.git
+cd luajit-2.0
 make && make install
 cd ..
 # Download Nginx
