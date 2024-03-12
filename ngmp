@@ -90,6 +90,8 @@ echo "Installing Nginx, PHP, and MariaDB..."
 echo "Nginx Version: $nginx_version"
 echo "PHP Version: $php_version"
 echo "MariaDB Version: $mariadb_version"
+mkdir $HOME/ngmp
+cd $HOME/ngmp
 # Install Dependency
 if [ -f /usr/bin/apt ];
 then
@@ -176,6 +178,7 @@ ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/sbin/mysqlimport
 ln -sf /usr/local/mariadb/bin/mysqlshow /usr/local/sbin/mysqlshow
 ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/sbin/mysqlcheck
 ln -sf /usr/local/mariadb/bin/mysqlslap /usr/local/sbin/mysqlslap
+ln -sf /usr/local/mariadb/bin/mysql_secure_installation /usr/local/sbin/mysql_secure_installation
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
@@ -184,3 +187,9 @@ systemctl daemon-reload
 systemctl enable --now  nginx.service
 systemctl enable --now  php-fpm.service
 systemctl enable --now  mariadb.service
+# Install Composer
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+# End
+echo "Install Complete"
+echo "Please run mysql_secure_installation to configure your MariaDB installation."
