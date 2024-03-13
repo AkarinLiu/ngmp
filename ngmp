@@ -212,8 +212,8 @@ else
 fi
 # Add PATH
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
-ln -sf /usr/local/php/sbin/php /usr/local/bin/php
-ln -sf /usr/local/php/sbin/php-fpm /usr/local/bin/php-fpm
+ln -sf /usr/local/php/bin/php /usr/local/bin/php
+ln -sf /usr/local/php/sbin/php-fpm /usr/local/sbin/php-fpm
 ln -sf /usr/local/mariadb/bin/mysql /usr/local/bin/mysql
 ln -sf /usr/local/mariadb/bin/mysqladmin /usr/local/bin/mysqladmin
 ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
