@@ -110,12 +110,12 @@ cd $HOME/ngmp-data
 if [ -f /usr/bin/apt ];
 then
     apt update
-    apt install -y build-essential libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev curl
+    apt install -y build-essential libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev curl libpng-dev
 elif [ -f /usr/bin/yum ];
 then
     yum update -y
     yum groupinstall "Development Tools"
-    yum install -y gcc make boost-devel lua-devel pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel curl
+    yum install -y gcc make boost-devel lua-devel pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel curl libpng-devel
 else
     echo "Unsupported OS"
     exit 1
@@ -147,7 +147,7 @@ fi
 # Build PHP
 cd ../php
 ./buildconf
-./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config --with-zlib
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3"
 if [ $jobs == "1" ]; then
     make && make install
 elif [ $jobs == "2" ]; then
