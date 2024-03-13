@@ -133,10 +133,10 @@ make -j2 && make install
 # Build MariaDB
 if [ "$mariadb_binary" == "true" ]; then
     mv mariadb-$mariadb_version-linux-systemd-x86_64/ /usr/local/mariadb/
-    chown -R mysql:mysql /usr/local/mariadb/
-    chmod -R 755 /usr/local/mariadb/
     groupadd -u 162 mysql
     useradd -u 162 -s /sbin/nologin mysql
+    chown -R mysql:mysql /usr/local/mariadb/
+    chmod -R 755 /usr/local/mariadb/
     /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
 else
     cd ../mariadb-$mariadb_version
