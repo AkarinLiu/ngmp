@@ -79,30 +79,23 @@ else
     echo "Invalid choice"
     exit 1
 fi
-echo "MariaDB Using binary install? [Y/n]"
-read -p "Enter your choice: " mariadb_binary_choice
-if [ $mariadb_binary_choice == "Y" ] || [ $mariadb_binary_choice == "y" ]; then
-    mariadb_binary="true"
-else
-    mariadb_binary="false"
-fi
 echo "Using Multi-Jobs Compile?"
 echo "1. No"
 echo "2. 2 Jobs"
 echo "3. 4 Jobs"
 echo "4. 6 Jobs"
 echo "5. 8 Jobs"
-read -p "Enter your choice: " mariadb_jobs_choice
-if [ $mariadb_jobs_choice -eq 1 ]; then
-    mariadb_jobs="1"
-elif [ $mariadb_jobs_choice -eq 2 ]; then
-    mariadb_jobs="2"
-elif [ $mariadb_jobs_choice -eq 3 ]; then
-    mariadb_jobs="4"
-elif [ $mariadb_jobs_choice -eq 4 ]; then
-    mariadb_jobs="6"
-elif [ $mariadb_jobs_choice -eq 5 ]; then
-    mariadb_jobs="8"
+read -p "Enter your choice: " jobs_choice
+if [ $jobs_choice -eq 1 ]; then
+    jobs="1"
+elif [ $jobs_choice -eq 2 ]; then
+    jobs="2"
+elif [ $jobs_choice -eq 3 ]; then
+    jobs="4"
+elif [ $jobs_choice -eq 4 ]; then
+    jobs="6"
+elif [ $jobs_choice -eq 5 ]; then
+    jobs="8"
 else
     echo "Invalid choice"
     exit 1
@@ -145,71 +138,51 @@ fi
 # Build Nginx
 cd nginx-$nginx_version
 ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0"
-if [ $mariadb_jobs == "1" ]; then
+if [ $jobs == "1" ]; then
     make && make install
-elif [ $mariadb_jobs == "2" ]; then
+elif [ $jobs == "2" ]; then
     make -j2 && make install
-elif [ $mariadb_jobs == "4" ]; then
+elif [ $jobs == "4" ]; then
     make -j4 && make install
-elif [ $mariadb_jobs == "6" ]; then
+elif [ $jobs == "6" ]; then
     make -j6 && make install
-elif [ $mariadb_jobs == "8" ]; then
+elif [ $jobs == "8" ]; then
     make -j8 && make install
 fi
 # Build PHP
 cd ../php
 ./buildconf
-./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
-if [ $mariadb_jobs == "1" ]; then
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config --with-zlib
+if [ $jobs == "1" ]; then
     make && make install
-elif [ $mariadb_jobs == "2" ]; then
+elif [ $jobs == "2" ]; then
     make -j2 && make install
-elif [ $mariadb_jobs == "4" ]; then
+elif [ $jobs == "4" ]; then
     make -j4 && make install
-elif [ $mariadb_jobs == "6" ]; then
+elif [ $jobs == "6" ]; then
     make -j6 && make install
-elif [ $mariadb_jobs == "8" ]; then
+elif [ $jobs == "8" ]; then
     make -j8 && make install
 fi
 # Build MariaDB
-if [ "$mariadb_binary" == "true" ]; then
-    mv mariadb-$mariadb_version-linux-systemd-x86_64/ /usr/local/mariadb/
-    groupadd -u 162 mysql
-    useradd -u 162 -s /sbin/nologin mysql
-    chown -R mysql:mysql /usr/local/mariadb/
-    chmod -R 755 /usr/local/mariadb/
-    /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
-else
-    cd ../mariadb-$mariadb_version
-    cmake . \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \
-    -DMYSQL_DATADIR=/usr/local/mariadb/data \
-    -DSYSCONFDIR=/etc \
-    -DWITH_INNOBASE_STORAGE_ENGINE=1 \
-    -DWITH_READLINE=1 \
-    -DWITH_SSL=system \
-    -DWITH_ZLIB=system \
-    -DWITH_LIBWRAP=0 \
-    -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
-    -DDEFAULT_CHARSET=utf8mb4 \
-    -DDEFAULT_COLLATION=utf8mb4_general_ci
-    if [ $mariadb_jobs == "1" ]; then
-        make && make install
-    elif [ $mariadb_jobs == "2" ]; then
-        make -j2 && make install
-    elif [ $mariadb_jobs == "4" ]; then
-        make -j4 && make install
-    elif [ $mariadb_jobs == "6" ]; then
-        make -j6 && make install
-    elif [ $mariadb_jobs == "8" ]; then
-        make -j8 && make install
-    fi
-    sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
-    sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
-    sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
-    groupadd -u 162 mysql
-    useradd -u 162 -s /sbin/nologin mysql
+cd ../mariadb-$mariadb_version
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \ -DMYSQL_DATADIR=/usr/local/mariadb/data \ -DSYSCONFDIR=/etc \ -DWITH_INNOBASE_STORAGE_ENGINE=1 \ -DWITH_READLINE=1 \ -DWITH_SSL=system \ -DWITH_ZLIB=system \ -DWITH_LIBWRAP=0 \ -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \ -DDEFAULT_CHARSET=utf8mb4 \ -DDEFAULT_COLLATION=utf8mb4_general_ci
+if [ $jobs == "1" ]; then
+    make && make install
+elif [ $jobs == "2" ]; then
+    make -j2 && make install
+elif [ $jobs == "4" ]; then
+    make -j4 && make install
+elif [ $jobs == "6" ]; then
+    make -j6 && make install
+elif [ $jobs == "8" ]; then
+    make -j8 && make install
 fi
+sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
+sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
+sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
+groupadd -u 162 mysql
+useradd -u 162 -s /sbin/nologin mysql
 # Add PATH
 ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
 ln -sf /usr/local/php/bin/php /usr/local/bin/php
