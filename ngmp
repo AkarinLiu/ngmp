@@ -168,11 +168,13 @@ ln -sf /usr/local/mariadb/bin/mysqladmin /usr/local/bin/mysqladmin
 ln -sf /usr/local/mariadb/bin/mysqldump /usr/local/bin/mysqldump
 ln -sf /usr/local/mariadb/bin/mysqlimport /usr/local/bin/mysqlimport
 ln -sf /usr/local/mariadb/bin/mysqlcheck /usr/local/bin/mysqlcheck
+ln -sf /usr/local/mariadb/bin/mysql_secure_installation /usr/local/bin/mysql_secure_installation
 ln -sf /usr/local/mariadb/bin/mariadb /usr/local/bin/mariadb
 ln -sf /usr/local/mariadb/bin/mariadbd /usr/local/bin/mariadbd
 ln -sf /usr/local/mariadb/bin/mariadbimport /usr/local/bin/mariadbimport
 ln -sf /usr/local/mariadb/bin/mariadbadmin /usr/local/bin/mariadbadmin
 ln -sf /usr/local/mariadb/bin/mariadbdump /usr/local/bin/mariadbdump
+ln -sf /usr/local/mariadb/bin/mariadb-secure-installation /usr/local/bin/mariadb-secure-installation
 # Install Service
 wget --no-clobber -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
 wget --no-clobber -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
