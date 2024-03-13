@@ -161,7 +161,7 @@ elif [ $jobs == "8" ]; then
 fi
 # Build MariaDB
 cd ../mariadb-$mariadb_version
-cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \ -DMYSQL_DATADIR=/usr/local/mariadb/data \ -DSYSCONFDIR=/etc \ -DWITH_INNOBASE_STORAGE_ENGINE=1 \ -DWITH_READLINE=1 \ -DWITH_SSL=system \ -DWITH_ZLIB=system \ -DWITH_LIBWRAP=0 \ -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \ -DDEFAULT_CHARSET=utf8mb4 \ -DDEFAULT_COLLATION=utf8mb4_general_ci
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mariadb \ -DMYSQL_DATADIR=/usr/local/mariadb/data \ -DSYSCONFDIR=/etc \ -DWITH_INNOBASE_STORAGE_ENGINE=1 \ -DWITH_READLINE=1 \ -DWITH_SSL=system \ -DWITH_ZLIB=system \ -DWITH_LIBWRAP=0 \ -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \ -DDEFAULT_CHARSET=utf8mb4 \ -DDEFAULT_COLLATION=utf8mb4_unicode_ci \ -DEXTRA_CHARSETS=all \ -DENABLED_LOCAL_INFILE=1 \ -DWITH_EMBEDDED_SERVER=1 \ -DENABLED_DOWNLOADS=1
 if [ $jobs == "1" ]; then
     make && make install
 elif [ $jobs == "2" ]; then
