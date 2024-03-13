@@ -147,7 +147,7 @@ fi
 # Build PHP
 cd ../php
 ./buildconf
-./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-pgsql --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --enable-opcache 
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-pgsql --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --with-openssl-opt="enable-tls1_2" --enable-opcache 
 if [ $jobs == "1" ]; then
     make && make install
 elif [ $jobs == "2" ]; then
