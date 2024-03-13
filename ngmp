@@ -123,7 +123,7 @@ else
 fi
 # Build Nginx
 cd nginx-$nginx_version
-./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-sites-enabled=/usr/local/nginx/conf/sites-enabled --with-cc-opt="-O0"
+./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0"
 make -j2 && make install
 # Build PHP
 cd ../php
