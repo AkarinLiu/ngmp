@@ -176,9 +176,9 @@ ln -sf /usr/local/mariadb/bin/mariadbadmin /usr/local/bin/mariadbadmin
 ln -sf /usr/local/mariadb/bin/mariadbdump /usr/local/bin/mariadbdump
 ln -sf /usr/local/mariadb/bin/mariadb-secure-installation /usr/local/bin/mariadb-secure-installation
 # Install Service
-wget -U --force-update -O /etc/systemd/system/nginx.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
-wget -U --force-update -O /etc/systemd/system/php-fpm.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
-wget -U --force-update -O /etc/systemd/system/mariadb.service https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
+wget -U --force-update -O /etc/systemd/system/nginx.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+wget -U --force-update -O /etc/systemd/system/mariadb.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/mariadb.service
 systemctl daemon-reload
 systemctl enable --now  nginx.service
 systemctl enable --now  php-fpm.service
