@@ -124,12 +124,12 @@ fi
 # Build Nginx
 cd nginx-$nginx_version
 ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/"
-make && make install
+make -j2 && make install
 # Build PHP
 cd ../php
 ./buildconf
 ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
-make && make install
+make -j2 && make install
 # Build MariaDB
 if [ "$mariadb_binary" == "true" ]; then
     mv mariadb-$mariadb_version-linux-systemd-x86_64/ /usr/local/mariadb/
@@ -152,7 +152,7 @@ else
     -DMYSQL_UNIX_ADDR=/var/run/mariadb/mariadb.sock \
     -DDEFAULT_CHARSET=utf8mb4 \
     -DDEFAULT_COLLATION=utf8mb4_general_ci
-    make && make install
+    make -j2 && make install
     sudo /usr/local/mariadb/scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb --datadir=/usr/local/mariadb/data
     sudo cp /usr/local/mariadb/support-files/my-huge.cnf /etc/my.cnf
     sudo /usr/local/mariadb/bin/mysqld_safe --user=mysql &
