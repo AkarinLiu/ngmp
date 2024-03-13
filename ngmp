@@ -128,13 +128,8 @@ tar -xvf nginx-$nginx_version.tar.gz
 echo "Downloading PHP $php_version"
 git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 echo "Downloading MariaDB $mariadb_version"
-if [ $mariadb_binary == "true" ]; then
-    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
-    tar -xvf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
-else
-    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
-    tar -xvf mariadb-$mariadb_version.tar.gz
-fi
+wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+tar -xvf mariadb-$mariadb_version.tar.gz
 # Build Nginx
 cd nginx-$nginx_version
 ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0"
