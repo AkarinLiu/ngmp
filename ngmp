@@ -67,24 +67,24 @@ else
     echo "Invalid choice"
     exit 1
 fi
-echo "Select MariaDB Mirror:"
-echo "1. TUNA"
-echo "2. USTC"
-echo "3. Aliyun"
-read -p "Enter your choice: " mariadb_mirror_choice
-if [ $mariadb_mirror_choice -eq 1 ]; then
-    mariadb_mirror="https://mirrors.tuna.tsinghua.edu.cn/mariadb"
-elif [ $mariadb_mirror_choice -eq 2 ]; then
-    mariadb_mirror="https://mirrors.ustc.edu.cn/mariadb"
-elif [ $mariadb_mirror_choice -eq 3 ]; then
-    mariadb_mirror="https://mirrors.aliyun.com/mariadb"
-else
-    echo "Invalid choice"
-    exit 1
-fi
 if [ $mariadb_version == "none" ]; then
     echo "MariaDB will not be installed"
 else
+    echo "Select MariaDB Mirror:"
+    echo "1. TUNA"
+    echo "2. USTC"
+    echo "3. Aliyun"
+    read -p "Enter your choice: " mariadb_mirror_choice
+    if [ $mariadb_mirror_choice -eq 1 ]; then
+        mariadb_mirror="https://mirrors.tuna.tsinghua.edu.cn/mariadb"
+    elif [ $mariadb_mirror_choice -eq 2 ]; then
+        mariadb_mirror="https://mirrors.ustc.edu.cn/mariadb"
+    elif [ $mariadb_mirror_choice -eq 3 ]; then
+        mariadb_mirror="https://mirrors.aliyun.com/mariadb"
+    else
+        echo "Invalid choice"
+        exit 1
+    fi
     echo "MariaDB using Binary Install? [Y/n]"
     read -p "Enter your choice: " mariadb_binary_install_choice
     if [ $mariadb_binary_install_choice == "Y" ] || [ $mariadb_binary_install_choice == "y" ]; then
