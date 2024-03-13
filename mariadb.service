@@ -6,11 +6,10 @@ After=network.target
 Type=forking
 User=mysql
 Group=mysql
-PIDFile=/var/run/mariadb/mariadb.pid
-ExecStart=/usr/local/bin/mariadbd --daemonize --pid-file=/var/run/mariadb/mariadb.pid
+ExecStart=/usr/local/bin/mariadbd --daemonize
 ExecStop=/usr/local/bin/mysqladmin shutdown
-Restart=on-failure
-RestartPreventExitStatus=1
+Restart=always
+RestartSec=10s
 PrivateTmp=true
 
 [Install]
