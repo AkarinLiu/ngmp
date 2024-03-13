@@ -159,7 +159,7 @@ fi
 # Build PHP
 cd ../php
 ./buildconf
-./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config --pid-path=/var/run/php-fpm.pid
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-openssl --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --with-mysqli --with-pdo-mysql --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-curl --enable-zip --enable-soap --enable-bcmath --enable-sockets --enable-pcntl --enable-mysqlnd --with-mysqli-sock=/var/ --with-pkg-config-path=/usr/bin/pkg-config
 if [ $mariadb_jobs == "1" ]; then
     make && make install
 elif [ $mariadb_jobs == "2" ]; then
