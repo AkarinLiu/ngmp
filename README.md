@@ -32,3 +32,4 @@ wget --no-clobber https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp &
 ## 鸣谢
 - [CodeGeeX](https://codegeex.com)
 - [智谱轻言](https://chatglm.cn)
+- [通义千问](https://qianwen.aliyun.com)
