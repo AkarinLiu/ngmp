@@ -188,7 +188,7 @@ if [ $mariadb_binary_install == "true" ]; then
     tar -xf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
     mv mariadb-$mariadb_version-linux-systemd-x86_64 /usr/local/mysql
     cd /usr/local/mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql 
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
     cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
     useradd -s /sbin/nologin mysql
     groupadd mysql
@@ -204,10 +204,10 @@ elif [ $mariadb_binary_install == "false"]; then
         -DWITH_INNOBASE_STORAGE_ENGINE=1 \
         -DEXTRA_CHARSETS=all \
         -DDEFAULT_CHARSET=utf8mb4 \
-        -DDEFAULT_COLLATION=utf8mb4_general_ci
+        -DDEFAULT_COLLATION=utf8mb4_unicode_ci
     make -j$jobs && make install
     cd /usr/local/mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql 
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
     useradd -s /sbin/nologin mysql
     groupadd mysql
     chown -R mysql:mysql /usr/local/mysql
