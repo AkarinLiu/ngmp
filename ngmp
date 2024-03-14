@@ -188,10 +188,10 @@ if [ $mariadb_binary_install == "true" ]; then
     tar -xf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
     mv mariadb-$mariadb_version-linux-systemd-x86_64 /usr/local/mysql
     cd /usr/local/mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
-    cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
     useradd -s /sbin/nologin mysql
     groupadd mysql
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
+    cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
 elif [ $mariadb_binary_install == "false"]; then
     wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
     tar -xf mariadb-$mariadb_version.tar.gz
@@ -206,9 +206,9 @@ elif [ $mariadb_binary_install == "false"]; then
         -DDEFAULT_COLLATION=utf8mb4_unicode_ci
     make -j$jobs && make install
     cd /usr/local/mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
     useradd -s /sbin/nologin mysql
     groupadd mysql
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
 else
     echo "MariaDB is not installed, skipping..."
 fi
