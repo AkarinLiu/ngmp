@@ -246,9 +246,6 @@ elif [ $http_server == "openresty" ]; then
 fi
 wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
 systemctl enable --now  php-fpm.service
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
 # End
 echo "Install Complete"
 echo "Please run mysql_secure_installation to configure your MariaDB installation."
