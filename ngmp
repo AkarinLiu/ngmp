@@ -108,8 +108,8 @@ echo "Using Multi-Jobs Compile?"
 echo "1. No"
 echo "2. 2 Jobs"
 echo "3. 4 Jobs"
-echo "4. 6 Jobs"
-echo "5. 8 Jobs"
+echo "4. 8 Jobs"
+echo "5. 16 Jobs"
 read -p "Enter your choice: " jobs_choice
 if [ $jobs_choice == 1 ]; then
     jobs="1"
@@ -118,9 +118,9 @@ elif [ $jobs_choice == 2 ]; then
 elif [ $jobs_choice == 3 ]; then
     jobs="4"
 elif [ $jobs_choice == 4 ]; then
-    jobs="6"
-elif [ $jobs_choice == 5 ]; then
     jobs="8"
+elif [ $jobs_choice == 5 ]; then
+    jobs="16"
 else
     echo "Invalid choice"
     exit 1
@@ -159,17 +159,7 @@ if [ $http_server == "nginx" ]; then
     # Build Nginx
     cd nginx-$nginx_version
     ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0"
-    if [ $jobs == "1" ]; then
-        make && make install
-    elif [ $jobs == "2" ]; then
-        make -j2 && make install
-    elif [ $jobs == "4" ]; then
-        make -j4 && make install
-    elif [ $jobs == "6" ]; then
-        make -j6 && make install
-    elif [ $jobs == "8" ]; then
-        make -j8 && make install
-    fi
+    make -j$job && make install
     cd ..
 elif [ $http_server == "openresty" ]; then
     # Download OpenResty
@@ -179,17 +169,7 @@ elif [ $http_server == "openresty" ]; then
     # Build OpenResty
     cd openresty-$openresty_version
     ./configure --prefix=/usr/local/openresty --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/openresty.pid --with-cc-opt="-O0" --with-luajit
-    if [ $jobs == "1" ]; then
-        make && make install
-    elif [ $jobs == "2" ]; then
-        make -j2 && make install
-    elif [ $jobs == "4" ]; then
-        make -j4 && make install
-    elif [ $jobs == "6" ]; then
-        make -j6 && make install
-    elif [ $jobs == "8" ]; then
-        make -j8 && make install
-    fi
+    make -j$jobs && make install
     cd ..
 fi
 # Download PHP and MariaDB
@@ -199,17 +179,7 @@ git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
 cd php
 ./buildconf
 ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --with-openssl-opt="enable-tls1_2" --enable-opcache 
-if [ $jobs == "1" ]; then
-    make && make install
-elif [ $jobs == "2" ]; then
-    make -j2 && make install
-elif [ $jobs == "4" ]; then
-    make -j4 && make install
-elif [ $jobs == "6" ]; then
-    make -j6 && make install
-elif [ $jobs == "8" ]; then
-    make -j8 && make install
-fi
+make -j$jobs && make install
 cd ..
 # Install MariaDB
 echo "Downloading MariaDB $mariadb_version"
@@ -234,18 +204,8 @@ elif [ $mariadb_binary_install == "false"]; then
         -DWITH_INNOBASE_STORAGE_ENGINE=1 \
         -DEXTRA_CHARSETS=all \
         -DDEFAULT_CHARSET=utf8mb4 \
-        -DDEFAULT_COLLATION=utf8mb4_general_ci \
-    if [ $jobs == "1" ]; then
-        make && make install
-    elif [ $jobs == "2" ]; then
-        make -j2 && make install
-    elif [ $jobs == "4" ]; then
-        make -j4 && make install
-    elif [ $jobs == "6" ]; then
-        make -j6 && make install
-    elif [ $jobs == "8" ]; then
-        make -j8 && make install
-    fi
+        -DDEFAULT_COLLATION=utf8mb4_general_ci
+    make -j$jobs && make install
     useradd -s /sbin/nologin mysql
     groupadd mysql
     chown -R mysql:mysql /usr/local/mysql
