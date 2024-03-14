@@ -190,7 +190,7 @@ if [ $mariadb_binary_install == "true" ]; then
     cd /usr/local/mysql
     useradd -s /sbin/nologin mysql
     groupadd mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
     cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
 elif [ $mariadb_binary_install == "false"]; then
     wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
@@ -208,7 +208,7 @@ elif [ $mariadb_binary_install == "false"]; then
     cd /usr/local/mysql
     useradd -s /sbin/nologin mysql
     groupadd mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
 else
     echo "MariaDB is not installed, skipping..."
 fi
