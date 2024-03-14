@@ -195,7 +195,7 @@ elif [ $http_server -eq "openresty" ]; then
     tar -xvf openresty-$openresty_version.tar.gz
     # Build OpenResty
     cd openresty-$openresty_version
-    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0" --with-luajit
+    ./configure --prefix=/usr/local/openresty --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/openresty.pid --with-cc-opt="-O0" --with-luajit
     if [ $jobs == "1" ]; then
         make && make install
     elif [ $jobs == "2" ]; then
@@ -269,7 +269,11 @@ else
 fi
 cd ..
 # Add PATH
-ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+if [ $http_server == "nginx" ]; then
+    ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+elif [ $http_server == "openresty" ]; then
+    ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/local/sbin/nginx
+fi
 ln -sf /usr/local/php/bin/php /usr/local/bin/php
 ln -sf /usr/local/php/sbin/php-fpm /usr/local/sbin/php-fpm
 if [ $mariadb_version == "none" ]; then
@@ -289,8 +293,13 @@ else
     ln -sf /usr/local/mysql/bin/mariadb-secure-installation /usr/local/bin/mariadb-secure-installation
 fi
 # Install Service
-wget -U --force-update -O /etc/systemd/system/nginx.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
-systemctl enable --now  nginx.service
+if [ $http_server == "nginx"]; then
+    wget -U --force-update -O /etc/systemd/system/nginx.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+    systemctl enable --now  nginx.service
+elif [ $http_server == "openresty" ]; then
+    wget -U --force-update -O /etc/systemd/system/openresty.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/openresty.service
+    systemctl enable --now  openresty.service
+fi
 wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
 systemctl enable --now  php-fpm.service
 if [ $mariadb_version == "none" ]; then
