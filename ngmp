@@ -145,7 +145,7 @@ then
 elif [ -f /usr/bin/yum ];
 then
     yum update -y
-    yum groupinstall "Development Tools"
+    yum groupinstall -y "Development Tools"
     yum install -y gcc make boost-devel lua-devel pcre-devel zlib-devel openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel curl libpng-devel ncurses
 else
     echo "Unsupported OS"
@@ -192,7 +192,6 @@ if [ $mariadb_binary_install == "true" ]; then
     cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
     useradd -s /sbin/nologin mysql
     groupadd mysql
-    chown -R mysql:mysql /usr/local/mysql
 elif [ $mariadb_binary_install == "false"]; then
     wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
     tar -xf mariadb-$mariadb_version.tar.gz
@@ -210,7 +209,6 @@ elif [ $mariadb_binary_install == "false"]; then
     ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --default-character-set=utf8mb4_unicode_ci
     useradd -s /sbin/nologin mysql
     groupadd mysql
-    chown -R mysql:mysql /usr/local/mysql
 else
     echo "MariaDB is not installed, skipping..."
 fi
