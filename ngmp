@@ -52,6 +52,9 @@ elif [ $http_server = "openresty"]; them
         echo "Invalid choice"
         exit 1
     fi
+else
+    echo "Invalid choice"
+    exit 1
 fi
 echo "Select PHP Version:"
 echo "1. 8.3"
@@ -149,6 +152,9 @@ if [ $http_server -eq "nginx" ]; then
     echo "Nginx Version: $nginx_version"
 elif [ $http_server -eq "openresty" ]; then
     echo "OpenResty Version: $openresty_version"
+else
+    echo "Invalid choice"
+    exit 1
 fi
 echo "PHP Version: $php_version"
 echo "MariaDB Version: $mariadb_version"
