@@ -6,52 +6,29 @@ echo "Select HTTP Server Type:"
 echo "1. Nginx"
 echo "2. OpenResty"
 read -p "Enter your choice: " http_choice
-if [ $http_choice -eq 1 ]; then
+if [ $http_choice == 1 ]; then
     http_server="nginx"
-elif [ $http_choice -eq 2 ]; then
-    http_server="openresty"
-else
-    echo "Invalid choice"
-    exit 1
-fi
-if [ $http_server = "nginx" ]; then
     echo "Select Nginx Version:"
-    echo "1. 1.25.4"
-    echo "2. 1.24.0"
-    echo "3. 1.22.1"
-    echo "4. 1.20.2"
-    echo "5. 1.18.0"
+    echo "1. 1.24"
+    echo "2. 1.22"
+    echo "3. 1.20"
+    echo "4. 1.18"
     read -p "Enter your choice: " nginx_choice
-    if [ $nginx_choice -eq 1 ]; then
-        nginx_version="1.25.4"
-    elif [ $nginx_choice -eq 2 ]; then
+    if [ $nginx_version == 1 ]; then
         nginx_version="1.24.0"
-    elif [ $nginx_choice -eq 3 ]; then
-        nginx_version="1.22.1"
-    elif [ $nginx_choice -eq 4 ]; then
-        nginx_version="1.20.2"
-    elif [ $nginx_choice -eq 5 ]; then
+    elif [ $nginx_version == 2 ]; then
+        nginx_version="1.22.0"
+    elif [ $nginx_version == 3 ]; then
+        nginx_version="1.20.1"
+    elif [ $nginx_version == 4 ]; then
         nginx_version="1.18.0"
-    else
-    echo "Invalid choice"
-    exit 1
-    fi
-elif [ $http_server = "openresty"]; them
-    echo "Select OpenResty Version:"
-    echo "1. 1.25.3.1"
-    echo "2. 1.21.4.3"
-    echo "3. 1.19.9.1"
-    read -p "Enter your choice: " openresty_choice
-    if [ $openresty_choice -eq 1 ]; then
-        openresty_version="1.25.3.1"
-    elif [ $openresty_choice -eq 2 ]; then
-        openresty_version="1.21.4.3"
-    elif [ $openresty_choice -eq 3 ]; then
-        openresty_version="1.19.9.1"
     else
         echo "Invalid choice"
         exit 1
     fi
+elif [ $http_choice == 2 ]; then
+    http_server="openresty"
+    openresty_version="1.25.3.1"
 else
     echo "Invalid choice"
     exit 1
@@ -63,15 +40,15 @@ echo "3. 8.1"
 echo "4. 8.0"
 echo "5. 7.4"
 read -p "Enter your choice: " php_choice
-if [ $php_choice -eq 1 ]; then
+if [ $php_choice == 1 ]; then
     php_version="8.3"
-elif [ $php_choice -eq 2 ]; then
+elif [ $php_choice == 2 ]; then
     php_version="8.2"
-elif [ $php_choice -eq 3 ]; then
+elif [ $php_choice == 3 ]; then
     php_version="8.1"
-elif [ $php_choice -eq 4 ]; then
+elif [ $php_choice == 4 ]; then
     php_version="8.0"
-elif [ $php_choice -eq 5 ]; then
+elif [ $php_choice == 5 ]; then
     php_version="7.4"
 else
     echo "Invalid choice"
@@ -85,17 +62,17 @@ echo "4. 10.5.24"
 echo "5. 10.4.33"
 echo "6. None"
 read -p "Enter your choice: " mariadb_choice
-if [ $mariadb_choice -eq 1 ]; then
+if [ $mariadb_choice == 1 ]; then
     mariadb_version="11.4.1"
-elif [ $mariadb_choice -eq 2 ]; then
+elif [ $mariadb_choice == 2 ]; then
     mariadb_version="10.11.7"
-elif [ $mariadb_choice -eq 3 ]; then
+elif [ $mariadb_choice == 3 ]; then
     mariadb_version="10.6.17"
-elif [ $mariadb_choice -eq 4 ]; then
+elif [ $mariadb_choice == 4 ]; then
     mariadb_version="10.5.24"
-elif [ $mariadb_choice -eq 5 ]; then
+elif [ $mariadb_choice == 5 ]; then
     mariadb_version="10.4.33"
-elif [ $mariadb_choice -eq 6 ]; then
+elif [ $mariadb_choice == 6 ]; then
     mariadb_version="none"
 else
     echo "Invalid choice"
@@ -109,11 +86,11 @@ else
     echo "2. USTC"
     echo "3. Aliyun"
     read -p "Enter your choice: " mariadb_mirror_choice
-    if [ $mariadb_mirror_choice -eq 1 ]; then
+    if [ $mariadb_mirror_choice == 1 ]; then
         mariadb_mirror="https://mirrors.tuna.tsinghua.edu.cn/mariadb"
-    elif [ $mariadb_mirror_choice -eq 2 ]; then
+    elif [ $mariadb_mirror_choice == 2 ]; then
         mariadb_mirror="https://mirrors.ustc.edu.cn/mariadb"
-    elif [ $mariadb_mirror_choice -eq 3 ]; then
+    elif [ $mariadb_mirror_choice == 3 ]; then
         mariadb_mirror="https://mirrors.aliyun.com/mariadb"
     else
         echo "Invalid choice"
@@ -134,23 +111,23 @@ echo "3. 4 Jobs"
 echo "4. 6 Jobs"
 echo "5. 8 Jobs"
 read -p "Enter your choice: " jobs_choice
-if [ $jobs_choice -eq 1 ]; then
+if [ $jobs_choice == 1 ]; then
     jobs="1"
-elif [ $jobs_choice -eq 2 ]; then
+elif [ $jobs_choice == 2 ]; then
     jobs="2"
-elif [ $jobs_choice -eq 3 ]; then
+elif [ $jobs_choice == 3 ]; then
     jobs="4"
-elif [ $jobs_choice -eq 4 ]; then
+elif [ $jobs_choice == 4 ]; then
     jobs="6"
-elif [ $jobs_choice -eq 5 ]; then
+elif [ $jobs_choice == 5 ]; then
     jobs="8"
 else
     echo "Invalid choice"
     exit 1
 fi
-if [ $http_server -eq "nginx" ]; then
+if [ $http_server == "nginx" ]; then
     echo "Nginx Version: $nginx_version"
-elif [ $http_server -eq "openresty" ]; then
+elif [ $http_server == "openresty" ]; then
     echo "OpenResty Version: $openresty_version"
 else
     echo "Invalid choice"
@@ -174,7 +151,7 @@ else
     echo "Unsupported OS"
     exit 1
 fi
-if [ $http_server -eq "nginx" ]; then
+if [ $http_server == "nginx" ]; then
     # Download Nginx
     echo "Downloading Nginx $nginx_version"
     wget --no-clobber https://nginx.org/download/nginx-$nginx_version.tar.gz
@@ -194,7 +171,7 @@ if [ $http_server -eq "nginx" ]; then
         make -j8 && make install
     fi
     cd ..
-elif [ $http_server -eq "openresty" ]; then
+elif [ $http_server == "openresty" ]; then
     # Download OpenResty
     echo "Downloading OpenResty $openresty_version"
     wget --no-clobber https://openresty.org/download/openresty-$openresty_version.tar.gz
