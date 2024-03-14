@@ -23,6 +23,11 @@
 wget --no-clobber https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
 ```
 
+位于中国大陆地区的服务器可以使用以下脚本：
+
+```bash
+wget --no-clobber https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/ngmp && bash ngmp
+```
 ## 已知问题
 
 以下是已知问题列表，欢迎提交 [Pull Request](https://github.com/AkarinLiu/ngmp/pulls) 来修复这些问题。
