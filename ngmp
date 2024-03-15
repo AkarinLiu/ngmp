@@ -96,13 +96,6 @@ else
         echo "Invalid choice"
         exit 1
     fi
-    echo "MariaDB using Binary Install? [Y/n]"
-    read -p "Enter your choice: " mariadb_binary_install_choice
-    if [ $mariadb_binary_install_choice == "Y" ] || [ $mariadb_binary_install_choice == "y" ]; then
-        mariadb_binary_install="true"
-    else
-        mariadb_binary_install="false"
-    fi
 fi
 echo "Using Multi-Jobs Compile?"
 echo "1. No"
@@ -181,44 +174,26 @@ cd php
 ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --with-openssl-opt="enable-tls1_2" --enable-opcache 
 make -j$jobs && make install
 cp php.ini-production /usr/local/php/etc/php.ini
-cp sapi/fpm/php-fpm.service.in /etc/systemd/system/php-fpm.service
-sed -i "s;\@EXPANDED_LOCALSTATEDIR@;/usr/local/php;g" /etc/systemd/system/php-fpm.service
-sed -i "s;\@EXPANDED_SBINDIR@;/usr/local/php/sbin;g" /etc/systemd/system/php-fpm.service
-sed -i "s;\@EXPANDED_SYSCONFDIR@;/etc/php;g" /etc/systemd/system/php-fpm.service
 cd /usr/local/php
 cp etc/php-fpm.conf.default etc/php-fpm.conf
 cd ..
 # Install MariaDB
-echo "Downloading MariaDB $mariadb_version"
-if [ $mariadb_binary_install == "true" ]; then
-    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/bintar-linux-systemd-x86_64/mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
-    tar -xf mariadb-$mariadb_version-linux-systemd-x86_64.tar.gz
-    mv mariadb-$mariadb_version-linux-systemd-x86_64 /usr/local/mysql
-    cd /usr/local/mysql
-    useradd -s /sbin/nologin mysql
-    groupadd mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
-    cp /usr/local/mysql/support-files/systemd/mariadb.service /etc/systemd/system/mariadb.service
-elif [ $mariadb_binary_install == "false"]; then
-    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
-    tar -xf mariadb-$mariadb_version.tar.gz
-    cd mariadb-$mariadb_version
-    cmake . \ 
-        -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
-        -DMYSQL_DATADIR=/usr/local/mysql/data \
-        -DSYSCONFDIR=/usr/local/mysql/etc \
-        -DWITH_INNOBASE_STORAGE_ENGINE=1 \
-        -DEXTRA_CHARSETS=all \
-        -DDEFAULT_CHARSET=utf8mb4 \
-        -DDEFAULT_COLLATION=utf8mb4_unicode_ci
+if [ $mariadb_version == "none" ]; then
+    echo "Skipping MariaDB installation"
+else
+    echo "Downloading MariaDB $mariadb_version"
+    wget --no-cobber $mariadb_mirror/mariadb_$mariadb_version/source/mariadb_$mariadb_version.tar.gz
+    tar -xf mariadb_$mariadb_version.tar.gz
+    cd mariadb_$mariadb_version
+    rm -f CMakeCache.txt
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_unicode_ci -DWITH_INNOBASE_STORAGE_ENGINE=1
     make -j$jobs && make install
     cd /usr/local/mysql
     useradd -s /sbin/nologin mysql
     groupadd mysql
-    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql
-else
-    echo "MariaDB is not installed, skipping..."
-fi
+    chown -R mysql:mysql .
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+    cp support-files/systemd/mariadb.service /etc/systemd/system/
 # Add PATH
 if [ $http_server == "nginx" ]; then
     ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
@@ -251,7 +226,7 @@ elif [ $http_server == "openresty" ]; then
     wget -U --force-update -O /etc/systemd/system/openresty.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/openresty.service
     systemctl enable --now  openresty.service
 fi
-# wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
 systemctl enable --now  php-fpm.service
 # End
 echo "Install Complete"
