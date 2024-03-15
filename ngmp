@@ -181,7 +181,7 @@ if [ $mariadb_version == "none" ]; then
     echo "Skipping MariaDB installation"
 else
     echo "Downloading MariaDB $mariadb_version"
-    wget --no-cobber $mariadb_mirror/mariadb_$mariadb_version/source/mariadb_$mariadb_version.tar.gz
+    wget --no-clobber $mariadb_mirror/mariadb_$mariadb_version/source/mariadb_$mariadb_version.tar.gz
     tar -xf mariadb_$mariadb_version.tar.gz
     cd mariadb_$mariadb_version
     rm -f CMakeCache.txt
