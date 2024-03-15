@@ -182,8 +182,8 @@ if [ $mariadb_version == "none" ]; then
 else
     echo "Downloading MariaDB $mariadb_version"
     wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
-    tar -xf mariadb_$mariadb_version.tar.gz
-    cd mariadb_$mariadb_version
+    tar -xf mariadb-$mariadb_version.tar.gz
+    cd mariadb-$mariadb_version
     rm -f CMakeCache.txt
     cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_unicode_ci -DWITH_INNOBASE_STORAGE_ENGINE=1
     make -j$jobs && make install
