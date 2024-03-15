@@ -219,7 +219,7 @@ else
     ln -sf /usr/local/mysql/bin/mariadb-secure-installation /usr/local/bin/mariadb-secure-installation
 fi
 # Install Service
-if [ $http_server == "nginx"]; then
+if [ $http_server == "nginx" ]; then
     wget -U --force-update -O /etc/systemd/system/nginx.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
     systemctl enable --now  nginx.service
 elif [ $http_server == "openresty" ]; then
