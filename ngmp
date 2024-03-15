@@ -250,7 +250,7 @@ elif [ $http_server == "openresty" ]; then
     wget -U --force-update -O /etc/systemd/system/openresty.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/openresty.service
     systemctl enable --now  openresty.service
 fi
-wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+# wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
 systemctl enable --now  php-fpm.service
 # End
 echo "Install Complete"
