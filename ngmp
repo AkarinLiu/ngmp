@@ -180,6 +180,12 @@ cd php
 ./buildconf
 ./configure --prefix=/usr/local/php --with-config-file-path=/etc --with-config-file-scan-dir=/etc/php.d --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --with-openssl-opt="enable-tls1_2" --enable-opcache 
 make -j$jobs && make install
+cp sapi/fpm/php-fpm.service.in /etc/systemd/system/php-fpm.service
+sed -i "s;\@EXPANDED_LOCALSTATEDIR@;/usr/local/php;g" /etc/systemd/system/php-fpm.service
+sed -i "s;\@EXPANDED_SBINDIR@;/usr/local/php/sbin;g" /etc/systemd/system/php-fpm.service
+sed -i "s;\@EXPANDED_SYSCONFDIR@;/etc/php;g" /etc/systemd/system/php-fpm.service
+cd /usr/local/php
+cp etc/php-fpm.conf.default etc/php-fpm.conf
 cd ..
 # Install MariaDB
 echo "Downloading MariaDB $mariadb_version"
