@@ -139,7 +139,8 @@ elif [ -f /usr/bin/yum ];
 then
     yum update -y
     yum groupinstall -y "Development Tools"
-    yum install -y gcc make boost-devel lua-devel pcre pcre-devel zlib-devel openssl openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3-devel libcurl-devel oniguruma-devel curl libpng-devel ncurses
+    yum install -y epel-release
+    yum install -y gcc make boost-devel compat-lua-devel pcre-devel zlib-devel openssl openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3x-devel libcurl-devel oniguruma curl libpng-devel ncurses
 else
     echo "Unsupported OS"
     exit 1
