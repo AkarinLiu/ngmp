@@ -9,23 +9,18 @@ read -p "Enter your choice: " http_choice
 if [ $http_choice == 1 ]; then
     http_server="nginx"
     echo "Select Nginx Version:"
-    echo "1. 1.24"
-    echo "2. 1.22"
-    echo "3. 1.20"
-    echo "4. 1.18"
+    echo "1. Latest Stable (1.25.3)"
+    echo "2. Previous Stable (1.24.0)"
     read -p "Enter your choice: " nginx_choice
-    if [ $nginx_version == 1 ]; then
+    if [ $nginx_choice == 1 ]; then
+        nginx_version="1.25.3"
+    elif [ $nginx_choice == 2 ]; then
         nginx_version="1.24.0"
-    elif [ $nginx_version == 2 ]; then
-        nginx_version="1.22.0"
-    elif [ $nginx_version == 3 ]; then
-        nginx_version="1.20.1"
-    elif [ $nginx_version == 4 ]; then
-        nginx_version="1.18.0"
     else
         echo "Invalid choice"
         exit 1
     fi
+fi
 elif [ $http_choice == 2 ]; then
     http_server="openresty"
     openresty_version="1.25.3.1"
