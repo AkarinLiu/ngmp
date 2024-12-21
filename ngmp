@@ -50,29 +50,31 @@ else
     exit 1
 fi
 echo "Select MariaDB Version:"
-echo "1. 11.4.1"
-echo "2. 10.11.7"
-echo "3. 10.6.17"
-echo "4. 10.5.24"
-echo "5. 10.4.33"
+echo "1. 11.8.0"
+echo "2. 11.7.1"
+echo "3. 11.6.2"
+echo "4. 11.4.4"
+echo "5. 10.11.0"
 echo "6. None"
 read -p "Enter your choice: " mariadb_choice
+
 if [ $mariadb_choice == 1 ]; then
-    mariadb_version="11.4.1"
+    mariadb_version="11.8.0"
 elif [ $mariadb_choice == 2 ]; then
-    mariadb_version="10.11.7"
+    mariadb_version="11.7.1"
 elif [ $mariadb_choice == 3 ]; then
-    mariadb_version="10.6.17"
+    mariadb_version="11.6.2"
 elif [ $mariadb_choice == 4 ]; then
-    mariadb_version="10.5.24"
+    mariadb_version="11.4.4"
 elif [ $mariadb_choice == 5 ]; then
-    mariadb_version="10.4.33"
+    mariadb_version="10.11.0"
 elif [ $mariadb_choice == 6 ]; then
     mariadb_version="none"
 else
     echo "Invalid choice"
     exit 1
 fi
+
 if [ $mariadb_version == "none" ]; then
     echo "MariaDB will not be installed"
 else
