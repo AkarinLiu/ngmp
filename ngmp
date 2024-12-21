@@ -29,26 +29,31 @@ else
     exit 1
 fi
 echo "Select PHP Version:"
-echo "1. 8.3"
-echo "2. 8.2"
-echo "3. 8.1"
-echo "4. 8.0"
-echo "5. 7.4"
+echo "1. 8.4"  # 新增选项
+echo "2. 8.3"
+echo "3. 8.2"
+echo "4. 8.1"
+echo "5. 8.0"
+echo "6. 7.4"
 read -p "Enter your choice: " php_choice
+
 if [ $php_choice == 1 ]; then
-    php_version="8.3"
+    php_version="8.4"  # 新增条件
 elif [ $php_choice == 2 ]; then
-    php_version="8.2"
+    php_version="8.3"
 elif [ $php_choice == 3 ]; then
-    php_version="8.1"
+    php_version="8.2"
 elif [ $php_choice == 4 ]; then
-    php_version="8.0"
+    php_version="8.1"
 elif [ $php_choice == 5 ]; then
+    php_version="8.0"
+elif [ $php_choice == 6 ]; then
     php_version="7.4"
 else
     echo "Invalid choice"
     exit 1
 fi
+
 echo "Select MariaDB Version:"
 echo "1. 11.8.0"
 echo "2. 11.7.1"
