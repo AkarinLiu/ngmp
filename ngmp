@@ -115,7 +115,7 @@ cd $HOME/ngmp-data
 if [ -f /usr/bin/apt ];
 then
     apt update
-    apt install -y build-essential libncurses5 libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev curl libpng-dev
+    apt install -y build-essential libncurses5 libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev curl libpng-dev libgnutls28-dev libncurses-dev
 elif [ -f /usr/bin/yum ];
 then
     yum update -y
