@@ -19,15 +19,18 @@
 
 *注意：请使用Root身份运行这个脚本！！*
 
-```bash
-wget --no-clobber https://raw.githubusercontent.com/AkarinLiu/NGMP/master/ngmp && bash ngmp
-```
-
-位于中国大陆地区的服务器可以使用以下脚本：
+### 稳定版
 
 ```bash
-wget --no-clobber https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/ngmp && bash ngmp
+git clone https://github.com/AkarinLiu/ngmp -b release && cd ./ngmp && bash ./ngmp
 ```
+
+### 实验室版
+
+```bash
+git clone https://github.com/AkarinLiu/ngmp -b lab && cd ./ngmp && bash ./ngmp
+```
+
 ## 已知问题
 
 以下是已知问题列表，欢迎提交 [Pull Request](https://github.com/AkarinLiu/ngmp/pulls) 来修复这些问题。
