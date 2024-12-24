@@ -40,4 +40,5 @@ git clone https://github.com/AkarinLiu/ngmp -b lab && cd ./ngmp && bash ./ngmp
 ## 鸣谢
 - [CodeGeeX](https://codegeex.com)
 - [智谱轻言](https://chatglm.cn)
-- [通义千问](https://qianwen.aliyun.com)
+- [通义](https://tongyi.aliyun.com)
+- [Moonshoot AI](https://moonshoot.cn)
