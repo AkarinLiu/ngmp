@@ -37,4 +37,3 @@ wget --no-clobber https://mirror.ghproxy.com/https://raw.githubusercontent.com/A
 ## 鸣谢
 - [CodeGeeX](https://codegeex.com)
 - [智谱轻言](https://chatglm.cn)
-- [通义千问](https://qianwen.aliyun.com)

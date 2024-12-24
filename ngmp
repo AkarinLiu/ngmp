@@ -1,5 +1,7 @@
 #!/bin/bash
-clear
+# NGMP Installer Script
+# Author: Your Name
+# Date: 2024.12.24
 echo "Welecome to NGMP!"
 echo "This script will help you install Nginx, MariaDB and PHP on your system."
 echo "Select HTTP Server Type:"
