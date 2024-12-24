@@ -1,0 +1,216 @@
+#!/bin/bash
+clear
+echo "Welecome to NGMP!"
+echo "This script will help you install Nginx, MariaDB and PHP on your system."
+echo "Select HTTP Server Type:"
+echo "1. Nginx"
+echo "2. OpenResty"
+read -p "Enter your choice: " http_choice
+if [ $http_choice == 1 ]; then
+    http_server="nginx"
+    echo "Select Nginx Version:"
+    echo "1. Latest Stable (1.25.3)"
+    echo "2. Previous Stable (1.24.0)"
+    read -p "Enter your choice: " nginx_choice
+    if [ $nginx_choice == 1 ]; then
+        nginx_version="1.25.3"
+    elif [ $nginx_choice == 2 ]; then
+        nginx_version="1.24.0"
+    else
+        echo "Invalid choice"
+        exit 1
+    fi
+fi
+elif [ $http_choice == 2 ]; then
+    http_server="openresty"
+    openresty_version="1.25.3.1"
+else
+    echo "Invalid choice"
+    exit 1
+fi
+echo "Select PHP Version:"
+echo "1. 8.4"  # 新增选项
+echo "2. 8.3"
+echo "3. 8.2"
+echo "4. 8.1"
+echo "5. 8.0"
+echo "6. 7.4"
+read -p "Enter your choice: " php_choice
+
+if [ $php_choice == 1 ]; then
+    php_version="8.4"  # 新增条件
+elif [ $php_choice == 2 ]; then
+    php_version="8.3"
+elif [ $php_choice == 3 ]; then
+    php_version="8.2"
+elif [ $php_choice == 4 ]; then
+    php_version="8.1"
+elif [ $php_choice == 5 ]; then
+    php_version="8.0"
+elif [ $php_choice == 6 ]; then
+    php_version="7.4"
+else
+    echo "Invalid choice"
+    exit 1
+fi
+
+echo "Select MariaDB Version:"
+echo "1. 11.8.0"
+echo "2. 11.7.1"
+echo "3. 11.6.2"
+echo "4. 11.4.4"
+echo "5. 10.11.0"
+echo "6. None"
+read -p "Enter your choice: " mariadb_choice
+
+if [ $mariadb_choice == 1 ]; then
+    mariadb_version="11.8.0"
+elif [ $mariadb_choice == 2 ]; then
+    mariadb_version="11.7.1"
+elif [ $mariadb_choice == 3 ]; then
+    mariadb_version="11.6.2"
+elif [ $mariadb_choice == 4 ]; then
+    mariadb_version="11.4.4"
+elif [ $mariadb_choice == 5 ]; then
+    mariadb_version="10.11.0"
+elif [ $mariadb_choice == 6 ]; then
+    mariadb_version="none"
+else
+    echo "Invalid choice"
+    exit 1
+fi
+
+if [ $mariadb_version == "none" ]; then
+    echo "MariaDB will not be installed"
+else
+    echo "Select MariaDB Mirror:"
+    echo "1. TUNA"
+    echo "2. USTC"
+    echo "3. Aliyun"
+    read -p "Enter your choice: " mariadb_mirror_choice
+    if [ $mariadb_mirror_choice == 1 ]; then
+        mariadb_mirror="https://mirrors.tuna.tsinghua.edu.cn/mariadb"
+    elif [ $mariadb_mirror_choice == 2 ]; then
+        mariadb_mirror="https://mirrors.ustc.edu.cn/mariadb"
+    elif [ $mariadb_mirror_choice == 3 ]; then
+        mariadb_mirror="https://mirrors.aliyun.com/mariadb"
+    else
+        echo "Invalid choice"
+        exit 1
+    fi
+fi
+if [ $http_server == "nginx" ]; then
+    echo "Nginx Version: $nginx_version"
+elif [ $http_server == "openresty" ]; then
+    echo "OpenResty Version: $openresty_version"
+else
+    echo "Invalid choice"
+    exit 1
+fi
+echo "PHP Version: $php_version"
+echo "MariaDB Version: $mariadb_version"
+mkdir $HOME/ngmp-data
+cd $HOME/ngmp-data
+# Install Dependency
+if [ -f /usr/bin/apt ];
+then
+    apt update
+    apt install -y build-essential libncurses5 libpcre3 lua5.4 libpcre3-dev zlib1g-dev libssl-dev git libxml2-dev autoconf bison re2c pkg-config libsqlite3-dev libcurl4-openssl-dev libonig-dev libboost-dev libreadline-dev  gcc g++ cmake zlib1g-dev libaio-dev curl libpng-dev libgnutls28-dev libncurses-dev
+elif [ -f /usr/bin/yum ];
+then
+    yum update -y
+    yum groupinstall -y "Development Tools"
+    yum install -y epel-release
+    yum install -y gcc make boost-devel compat-lua-devel pcre-devel zlib-devel openssl openssl-devel git libxml2-devel autoconf bison re2c pkg-config libsqlite3x-devel libcurl-devel oniguruma curl libpng-devel ncurses
+else
+    echo "Unsupported OS"
+    exit 1
+fi
+if [ $http_server == "nginx" ]; then
+    # Download Nginx
+    echo "Downloading Nginx $nginx_version"
+    wget --no-clobber https://nginx.org/download/nginx-$nginx_version.tar.gz
+    tar -xvf nginx-$nginx_version.tar.gz
+    # Build Nginx
+    cd nginx-$nginx_version
+    ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/nginx.pid --with-cc-opt="-O0"
+    make -j4&& make install
+    cd ..
+elif [ $http_server == "openresty" ]; then
+    # Download OpenResty
+    echo "Downloading OpenResty $openresty_version"
+    wget --no-clobber https://openresty.org/download/openresty-$openresty_version.tar.gz
+    tar -xf openresty-$openresty_version.tar.gz
+    # Build OpenResty
+    cd openresty-$openresty_version
+    ./configure --prefix=/usr/local/openresty --with-http_ssl_module --with-http_v2_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre  --with-openssl-opt="include=/usr/include/openssl" --with-openssl-opt="lib=/usr/lib" --with-openssl-opt='enable-tls1_3' --with-openssl-opt='enable-tls1_2' --user=www-data --group=www-data --with-ld-opt="-Wl,-rpath,/usr/local/php/lib/" --pid-path=/var/run/openresty.pid --with-cc-opt="-O0" --with-luajit
+    make -j4&& make install
+    cd ..
+fi
+# Download PHP and MariaDB
+echo "Downloading PHP $php_version"
+git clone https://gitee.com/mirrors/php.git -b PHP-$php_version
+# Build PHP
+cd php
+./buildconf
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --enable-mbstring --enable-zip --enable-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-sqlite --with-xml  --with-iconv-dir --with-xmlrpc --enable-soap --with-gettext --with-curl --enable-json --enable-openssl --enable-ftp --with-zlib --enable-gd-native-ttf --with-mhash --enable-pcntl --enable-bcmath --with-zlib --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-mbress --with-openssl --with-openssl-dir --with-openssl-opt="enable-tls1_3" --with-openssl-opt="enable-tls1_2" --enable-opcache 
+make -j4&& make install
+cp php.ini-production /usr/local/php/etc/php.ini 
+cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf
+cd ..
+# Install MariaDB
+if [ $mariadb_version == "none" ]; then
+    echo "Skipping MariaDB installation"
+else
+    echo "Downloading MariaDB $mariadb_version"
+    wget --no-clobber $mariadb_mirror/mariadb-$mariadb_version/source/mariadb-$mariadb_version.tar.gz
+    tar -xf mariadb-$mariadb_version.tar.gz
+    cd mariadb-$mariadb_version
+    rm -f CMakeCache.txt
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_unicode_ci -DWITH_INNOBASE_STORAGE_ENGINE=1
+    make -j4&& make install
+    cd /usr/local/mysql
+    useradd -s /sbin/nologin mysql
+    groupadd mysql
+    chown -R mysql:mysql .
+    ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+    cp support-files/systemd/mariadb.service /etc/systemd/system/
+fi
+# Add PATH
+if [ $http_server == "nginx" ]; then
+    ln -sf /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+elif [ $http_server == "openresty" ]; then
+    ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/local/sbin/nginx
+fi
+ln -sf /usr/local/php/bin/php /usr/local/bin/php
+ln -sf /usr/local/php/sbin/php-fpm /usr/local/sbin/php-fpm
+if [ $mariadb_version == "none" ]; then
+    echo "MariaDB is not installed, skipping..."
+else
+    ln -sf /usr/local/mysql/bin/mysql /usr/local/bin/mysql
+    ln -sf /usr/local/mysql/bin/mysqladmin /usr/local/bin/mysqladmin
+    ln -sf /usr/local/mysql/bin/mysqldump /usr/local/bin/mysqldump
+    ln -sf /usr/local/mysql/bin/mysqlimport /usr/local/bin/mysqlimport
+    ln -sf /usr/local/mysql/bin/mysqlcheck /usr/local/bin/mysqlcheck
+    ln -sf /usr/local/mysql/bin/mysql_secure_installation /usr/local/bin/mysql_secure_installation
+    ln -sf /usr/local/mysql/bin/mariadb /usr/local/bin/mariadb
+    ln -sf /usr/local/mysql/bin/mariadbd /usr/local/bin/mariadbd
+    ln -sf /usr/local/mysql/bin/mariadbimport /usr/local/bin/mariadbimport
+    ln -sf /usr/local/mysql/bin/mariadbadmin /usr/local/bin/mariadbadmin
+    ln -sf /usr/local/mysql/bin/mariadbdump /usr/local/bin/mariadbdump
+    ln -sf /usr/local/mysql/bin/mariadb-secure-installation /usr/local/bin/mariadb-secure-installation
+fi
+# Install Service
+if [ $http_server == "nginx" ]; then
+    wget -U --force-update -O /etc/systemd/system/nginx.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/nginx.service
+    systemctl enable --now  nginx.service
+elif [ $http_server == "openresty" ]; then
+    wget -U --force-update -O /etc/systemd/system/openresty.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/openresty.service
+    systemctl enable --now  openresty.service
+fi
+wget -U --force-update -O /etc/systemd/system/php-fpm.service https://mirror.ghproxy.com/https://raw.githubusercontent.com/AkarinLiu/ngmp/master/php-fpm.service
+systemctl enable --now  php-fpm.service
+# End
+echo "Install Complete"
+echo "Please run mysql_secure_installation to configure your MariaDB installation."
+cd 
